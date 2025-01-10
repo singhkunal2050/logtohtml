@@ -4,7 +4,8 @@
   "description": "A lightweight JavaScript utility that adds a dynamic log window to your application, beautifies console outputs, and enhances debugging on mobile interfaces.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack --mode production"
   },
   "keywords": [
     "console",
@@ -14,5 +15,10 @@
     "javascript"
   ],
   "author": "@singhkunal2050",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "babel-loader": "^9.2.1",
+    "webpack": "^5.97.1",
+    "webpack-cli": "^6.0.1"
+  }
 }
