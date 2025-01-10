@@ -1,3 +1,6 @@
+### 0.0.4 10th Jan 2024
+- Optimize
+
 ### 0.0.3 10th Jan 2024
 - Added Dist
 

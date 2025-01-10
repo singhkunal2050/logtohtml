@@ -85,11 +85,14 @@ export function createLogWindow() {
   });
 
 
+  const searchInput = document.createElement('input');
+
 
 
   // Append dropdown to filter container
   filterContainer.appendChild(filterDropdown);
   filterContainer.appendChild(clearConsoleButton);
+  filterContainer.appendChild(searchInput);
 
   logWindow.appendChild(filterContainer);
   logWindow.appendChild(logsList);
