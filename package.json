@@ -1,0 +1,18 @@
+{
+  "name": "logtohtml",
+  "version": "0.0.1",
+  "description": "A lightweight JavaScript utility that adds a dynamic log window to your application, beautifies console outputs, and enhances debugging on mobile interfaces.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "console",
+    "debugging",
+    "log",
+    "mobile-debugging",
+    "javascript"
+  ],
+  "author": "@singhkunal2050",
+  "license": "ISC"
+}
