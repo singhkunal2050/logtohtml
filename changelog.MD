@@ -1,3 +1,6 @@
+### 0.0.3 10th Jan 2024
+- Added Dist
+
 ### 0.0.2 10th Jan 2024  
 - Added dist folder to git
 
