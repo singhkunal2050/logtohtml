@@ -29,6 +29,10 @@ OR
 
 4. Once you are setup with installation and query param you fill find a window with logs in your page
 
+## Demo 
+
+https://singhkunal2050.github.io/logtohtml/test/index.html?logtohtml=true
+
 ## License
 
 MIT © [Kunal Singh](https://singhkunal2050.dev)

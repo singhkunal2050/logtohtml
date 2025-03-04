@@ -1,16 +1,89 @@
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Console Log Tester</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 20px;
+            background-color: #121212;
+            color: white;
+            text-align: center;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 10px;
+            border: none;
+            border-radius: 5px;
+            background-color: #007BFF;
+            color: white;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
 </head>
 <body>
-    
-</body>
-<!-- <script type="module" src="../index.js"></script> -->
- <script src="../dist/bundle.js"></script>
- <!-- <script src="https://cdn.jsdelivr.net/npm/logtohtml@0.0.3/dist/bundle.js"></script> -->
- <!-- <script src="https://cdn.jsdelivr.net/npm/logtohtml@0.0.5/dist/bundle.js"></script> -->
 
+    <h1>Console Log Test Page</h1>
+    <p>Click the button below to test various console log messages.</p>
+    <button onclick="testConsoleLogs()">Generate Logs</button>
+
+    <!-- Load your logging library -->
+    <script src="https://cdn.jsdelivr.net/npm/logtohtml@0.0.10/dist/bundle.js"></script>
+    <!-- <script type="module" src="../index.js"></script> -->
+    <!-- <script src="../dist/bundle.js"></script> -->
+    <!-- <script src="https://cdn.jsdelivr.net/npm/logtohtml@0.0.5/dist/bundle.js"></script> -->
+
+    <script>
+        function testConsoleLogs() {
+            console.log("This is a simple log message.");
+            console.info("This is an info message.");
+            console.warn("This is a warning message.");
+            console.error("This is an error message.", new Error("Sample error"));
+
+            console.debug("Debug message with data:", { key: "value", numbers: [1, 2, 3] });
+
+            console.log("%cStyled Log Message", "color: cyan; font-weight: bold; background: black; padding: 5px;");
+
+            console.group("Grouped Logs");
+            console.log("Inside group - log 1");
+            console.log("Inside group - log 2");
+            console.groupEnd();
+
+            console.table([
+                { name: "Alice", age: 25 },
+                { name: "Bob", age: 30 },
+                { name: "Charlie", age: 35 }
+            ]);
+
+            console.time("Timer Test");
+            setTimeout(() => {
+                console.timeEnd("Timer Test");
+            }, 500);
+
+            try {
+                throw new Error("Test Exception");
+            } catch (e) {
+                console.error("Caught Exception:", e);
+            }
+
+            console.assert(false, "This is an assertion failure message.");
+
+            console.count("Counter Test");
+            console.count("Counter Test");
+        }
+
+        // Auto-generate logs every 3 seconds
+        setInterval(testConsoleLogs, 3000);
+    </script>
+
+</body>
 </html>
