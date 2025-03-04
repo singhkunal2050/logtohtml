@@ -1,3 +1,5 @@
+### 0.0.7 04th Mar 2024
+- Updated readme
 
 ### 0.0.6 04th Mar 2024
 - Added Version Logging
