@@ -1,3 +1,7 @@
+### 0.0.5 04th Mar 2024
+- Added Search
+- Improved UX
+
 ### 0.0.4 10th Jan 2024
 - Optimize
 

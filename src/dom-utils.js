@@ -14,13 +14,15 @@ export function createLogWindow() {
   Object.assign(toggleButton.style, logWindowConfig.toggleButton.styles);
 
   toggleButton.addEventListener("click", () => {
-    if (logWindow.style.display === "none") {
-      logWindow.style.display = "block";
-      toggleButton.textContent = "Hide Logs";
-    } else {
-      logWindow.style.display = "none";
-      toggleButton.textContent = "Show Logs";
-    }
+    document.startViewTransition(() => {
+      if (logWindow.style.display === "none") {
+        logWindow.style.display = "block";
+        toggleButton.textContent = "Hide Logs ▼";
+      } else {
+        logWindow.style.display = "none";
+        toggleButton.textContent = "Show Logs ▲";
+      }
+    });
   });
 
   // Filter container
@@ -29,20 +31,22 @@ export function createLogWindow() {
     display : "flex",
     justifyContent : "flex-start",
     padding : "10px",
-    backgroundColor : "#3330006b",
-    backdropFilter : "blur(5px)",
-    borderBottom : "1px solid #efefef",
+    backgroundColor : "#333",
+    borderBottom : "1px #6b6b6b solid",
     position : "sticky",
     top : "0",
-    gap: "10px"
+    gap: "10px",
+    zIndex: "100"
   })
   
   // Create dropdown for filters
   const filterDropdown = document.createElement("select");
   Object.assign(filterDropdown.style, {
     color : "white",
-    backgroundColor : "black",
-    border : "1px solid white",
+    backgroundColor : "#3e3e3e",
+    border : "1px solid #6b6b6b",
+    borderRadius: "16px",
+    color: "#8c8c8c",
     cursor : "pointer",
     padding : "5px"
   })
@@ -78,7 +82,7 @@ export function createLogWindow() {
     padding: '5px'
   })
   clearConsoleButton.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24">
-    <path fill="none" stroke="white" stroke-width="2" d="M12,22 C17.5228475,22 22,17.5228475 22,12 C22,6.4771525 17.5228475,2 12,2 C6.4771525,2 2,6.4771525 2,12 C2,17.5228475 6.4771525,22 12,22 Z M5,5 L19,19"/>
+    <path fill="none" stroke="#6b6b6b" stroke-width="2" d="M12,22 C17.5228475,22 22,17.5228475 22,12 C22,6.4771525 17.5228475,2 12,2 C6.4771525,2 2,6.4771525 2,12 C2,17.5228475 6.4771525,22 12,22 Z M5,5 L19,19"/>
     </svg>`;
   clearConsoleButton.addEventListener("click", () => {
     document.getElementById(logWindowConfig.contentId).innerHTML = "";
@@ -86,8 +90,14 @@ export function createLogWindow() {
 
 
   const searchInput = document.createElement('input');
-
-
+  searchInput.placeholder = 'Search...';
+  Object.assign(searchInput.style, {
+    background: '#3e3e3e',
+    border: '1px solid #6b6b6b',
+    borderRadius: '16px', 
+    padding: '0 15px',
+    color:  '#aba5a5',
+  })
 
   // Append dropdown to filter container
   filterContainer.appendChild(filterDropdown);
@@ -98,6 +108,18 @@ export function createLogWindow() {
   logWindow.appendChild(logsList);
   document.body.appendChild(logWindow);
   document.body.appendChild(toggleButton);
+  searchInput.addEventListener('input', (e) => {
+    const searchText = e.target.value.toLowerCase();
+    const messages = logWindow.querySelectorAll('div.log-message');
+    messages.forEach((message) => {
+      const messageText = message.textContent.toLowerCase();
+      if (messageText.includes(searchText)) {
+        message.style.display = 'block';
+      } else {
+        message.style.display = 'none';
+      }
+    });
+  });
 }
 
 // Step 2: Override console functions
@@ -120,7 +142,7 @@ export function overrideConsole() {
         padding: "5px",
         marginBottom: "6px",
         borderBottom: "1px solid #444",
-        color: logColors[type] || "white",
+        backgroundColor: logColors[type] || "white",
       })
       // Add a timestamp
       const timestamp = new Date().toISOString();
@@ -147,7 +169,7 @@ export function overrideConsole() {
 
           const summary = document.createElement("summary");
           summary.textContent = `Details (${type})`;
-          summary.style.color = logColors[type];
+          summary.style.cursor = "pointer";
           details.appendChild(summary);
 
           const pre = document.createElement("pre");

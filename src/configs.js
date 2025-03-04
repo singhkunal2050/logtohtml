@@ -9,36 +9,38 @@ export const logWindowConfig = {
         width: '98vw',
         height: '40%',
         overflowY: 'scroll',
-        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+        backgroundColor: '#282828',
         color: 'white',
         fontFamily: 'monospace',
         fontSize: '12px',
-        padding: '0 10px',
         zIndex: '9999',
         display: 'none',
         wordBreak: 'break-all',
+        scrollbarWidth: 'thin',
+        scrollbarColor: '#6b6b6b #282828',
     },
     toggleButton: {
-        textContent: 'Show Logs',
+        textContent: 'Show Logs ▲',
         styles: {
             position: 'fixed',
             bottom: '0',
             right: '0',
             zIndex: '10000',
-            backgroundColor: 'black',
-            color: 'white',
+            backgroundColor: '#282828',
+            color: 'rgb(175, 175, 175)',
             border: 'none',
             padding: '10px',
             cursor: 'pointer',
+            borderRadius: '16px 0 0 0',
         },
     },
 };
 
 export const logColors = {
-    log: 'white',
-    debug: 'cyan',
-    error: 'red',
-    warn: 'yellow',
+    log: 'transparent',
+    debug: '#264445',
+    error: '#4e3434',
+    warn: '#413c26',
 };
 
 // Filter options
