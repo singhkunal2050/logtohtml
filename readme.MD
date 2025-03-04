@@ -19,7 +19,7 @@ OR
 1. Using CDN
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/logtohtml@0.0.3/dist/bundle.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/logtohtml/dist/bundle.js"></script>
 ```
 
 2. Add Query Param `?logtohtml=true` to your URL for testing
@@ -27,14 +27,7 @@ OR
 3. Demo Image
 ![Demo Image](./assets/demo.png)
 
-## Usage
-
-```js
-import { createLogWindow, overrideConsole } from 'logtohtml';
-
-createLogWindow();
-overrideConsole();
-```
+4. Once you are setup with installation and query param you fill find a window with logs in your page
 
 ## License
 
