@@ -25,7 +25,7 @@ OR
 2. Add Query Param `?logtohtml=true` to your URL for testing
 
 3. Demo Image
-![Demo Image](https://raw.githubusercontent.com/singhkunal2050/logtohtml/refs/heads/main/assets/demo.png)
+![Demo Image](https://raw.githubusercontent.com/singhkunal2050/logtohtml/refs/heads/main/assets/demo.jpg)
 
 4. Once you are setup with installation and query param you fill find a window with logs in your page
 
