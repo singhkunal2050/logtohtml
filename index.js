@@ -1,4 +1,6 @@
 import logWindow from "./src/logWindow.js";
+import packageJson from "./package.json";   
+const LIBRARY_VERSION = packageJson.version ?? 'debug';
 
 customElements.define("log-window", logWindow);
 
@@ -14,6 +16,7 @@ function testConsoleMessages() {
 if (new URLSearchParams(window.location.search).get('logtohtml') === 'true') {
     const logWindowElement = document.createElement("log-window");
     document.body.appendChild(logWindowElement);
+    console.log(`[LOGTOHTML] Library version: ${LIBRARY_VERSION}`);
 }
 
 for (let i = 0; i < 10; i++) {
