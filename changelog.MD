@@ -1,4 +1,4 @@
-### 0.1.0 04th Mar 2024
+### 0.0.10 04th Mar 2024
 - Added Version details
 
 ### 0.0.9 04th Mar 2024
