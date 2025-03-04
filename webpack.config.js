@@ -13,6 +13,10 @@ module.exports = {
         exclude: /node_modules/,
         use: 'babel-loader', // Optional: if you're using Babel for JS transpiling
       },
+      {
+        test: /\.css$/i,
+        use: ["css-loader"],
+      },
     ],
   },
   mode: 'production', // For production build

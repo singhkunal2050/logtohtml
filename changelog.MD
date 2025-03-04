@@ -1,3 +1,6 @@
+### 0.0.9 04th Mar 2024
+- Moved to Web Components
+
 ### 0.0.8 04th Mar 2024
 - Updated readme
 
