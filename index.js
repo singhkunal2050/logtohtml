@@ -1,9 +1,13 @@
 import { createLogWindow, overrideConsole } from './src/dom-utils.js';
+import packageJson from "./package.json";   
+const LIBRARY_VERSION = packageJson.version;
 
 // If logtohtml query param is present, create the log window and override console
 if (new URLSearchParams(window.location.search).get('logtohtml') === 'true') {
     createLogWindow();
     overrideConsole();
+    LIBRARY_VERSION
+    console.log(`[LOGTOHTML] Library version: ${LIBRARY_VERSION}`);
 }
 
 export function testConsoleMessages() {

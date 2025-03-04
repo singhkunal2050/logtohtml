@@ -1,3 +1,7 @@
+
+### 0.0.6 04th Mar 2024
+- Added Version Logging
+
 ### 0.0.5 04th Mar 2024
 - Added Search
 - Improved UX
