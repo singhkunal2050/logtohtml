@@ -1,6 +1,6 @@
 {
   "name": "logtohtml",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "A lightweight JavaScript utility that adds a dynamic log window to your application, beautifies console outputs, and enhances debugging on mobile interfaces.",
   "main": "index.js",
   "scripts": {
