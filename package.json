@@ -6,8 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "webpack --mode production",
-    "watch": "nodemon --watch src --ext js,css,html --exec 'npm run build'",
-    "publish": "npm run build && npm publish" 
+    "watch": "nodemon --watch src --ext js,css,html --exec 'npm run build'"
   },
   "keywords": [
     "console",
