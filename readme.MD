@@ -1,6 +1,6 @@
 ## Log to HTML
 
-A lightweight JavaScript utility that adds a dynamic log window to your application, beautifies console outputs, and enhances debugging on mobile interfaces. 
+A lightweight JavaScript utility that adds a dynamic log window to your application, beautifies console outputs, and enhances debugging on mobile & non desktop devices where we can not access the browser console.
 
 ## Npm Package
 
