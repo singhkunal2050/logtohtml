@@ -43,7 +43,11 @@
         }
 
         code{
-            background-color: #333;
+            background-color: #434242;
+            cursor: pointer;
+        }
+        code:hover{
+            background-color: #00d4ff;
         }
     </style>
 </head>
@@ -51,7 +55,7 @@
 
     <h1>Demo of Log to HTML Library</h1>
     <p>Click the button below to test various console log messages.</p>
-    <p>Ensure <code>?logtohtml=true</code> in the URL to test the log window</p>
+    <p>Ensure <code onclick="addParam()">?logtohtml=true</code> in the URL to test the log window</p>
     <button onclick="testConsoleLogs()">Generate Logs</button>
 
     <div class="links">
@@ -107,6 +111,12 @@
 
         // Auto-generate logs every 3 seconds
         setTimeout(testConsoleLogs, 3000);
+
+        function addParam() {
+            const url = new URL(window.location.href);
+            url.searchParams.set("logtohtml", "true");
+            window.location.href = url.toString();
+        }
     </script>
 
 </body>
