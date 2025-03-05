@@ -5,7 +5,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Console Log Tester</title>
+    <title>Demo of Log to HTML Library</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -27,13 +27,38 @@
         button:hover {
             background-color: #0056b3;
         }
+
+        .links {
+            margin-top: 20px;
+        }
+        .links a {
+            display: block;
+            color: #00d4ff;
+            text-decoration: none;
+            font-size: 18px;
+            margin: 5px 0;
+        }
+        .links a:hover {
+            text-decoration: underline;
+        }
+
+        code{
+            background-color: #333;
+        }
     </style>
 </head>
 <body>
 
-    <h1>Console Log Test Page</h1>
+    <h1>Demo of Log to HTML Library</h1>
     <p>Click the button below to test various console log messages.</p>
+    <p>Ensure <code>?logtohtml=true</code> in the URL to test the log window</p>
     <button onclick="testConsoleLogs()">Generate Logs</button>
+
+    <div class="links">
+        <p>More details:</p>
+        <a href="https://github.com/singhkunal2050/logtohtml" target="_blank">GitHub Repository</a>
+        <a href="https://www.npmjs.com/package/logtohtml" target="_blank">NPM Package</a>
+    </div>
 
     <!-- Load your logging library -->
     <script src="https://cdn.jsdelivr.net/npm/logtohtml@0.0.10/dist/bundle.js"></script>
