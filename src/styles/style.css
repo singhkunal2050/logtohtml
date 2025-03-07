@@ -1,63 +1,57 @@
 /* Styles for the log window */
 #dynamic-log-window {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    width: 98vw;
-    height: 40%;
-    overflow-y: scroll;
-    background-color: #282828;
-    color: white;
-    font-family: monospace;
-    font-size: 12px;
-    z-index: 9999;
-    display: none;
-    word-break: break-all;
-    /* Firefox-specific scrollbar styling */
-    scrollbar-width: thin;
-    scrollbar-color: #6b6b6b #282828;
-  }
-  
-  /* WebKit-specific scrollbar styling for Chrome, Safari, etc. */
-  #dynamic-log-window::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
-  }
-  #dynamic-log-window::-webkit-scrollbar-track {
-    background: #282828;
-  }
-  #dynamic-log-window::-webkit-scrollbar-thumb {
-    background-color: #6b6b6b;
-    border-radius: 4px;
-  }
-  
-  /* Styles for the toggle button */
-  #toggle-button {
-    position: fixed;
-    bottom: 0;
-    right: 0;
-    z-index: 10000;
-    background-color: #282828;
-    color: rgb(175, 175, 175);
-    border: none;
-    padding: 10px;
-    cursor: pointer;
-    border-radius: 16px 0 0 0;
-  }
-  
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 98vw;
+  height: 40%;
+  overflow-y: scroll;
+  background-color: #282828;
+  color: white;
+  font-family: monospace;
+  font-size: 12px;
+  z-index: 9999;
+  display: none;
+  word-break: break-all;
+  /* Firefox-specific scrollbar styling */
+  scrollbar-width: thin;
+  scrollbar-color: #6b6b6b #282828;
+}
 
-  /* Log window top header */
-#log-window-header {
-  display: flex;
-  justify-content: flex-start;
+/* WebKit-specific scrollbar styling for Chrome, Safari, etc. */
+#dynamic-log-window::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+#dynamic-log-window::-webkit-scrollbar-track {
+  background: #282828;
+}
+#dynamic-log-window::-webkit-scrollbar-thumb {
+  background-color: #6b6b6b;
+  border-radius: 4px;
+}
+
+/* Styles for the toggle button */
+#toggle-button {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  z-index: 10000;
+  background-color: #282828;
+  color: rgb(175, 175, 175);
+  border: none;
   padding: 10px;
+  cursor: pointer;
+  border-radius: 16px 0 0 0;
+}
+
+/* Log window top header */
+#filter-section {
+  display: flex;
+  padding: 6px;
   background-color: rgb(51, 51, 51);
-  border-bottom: 1px solid rgb(107, 107, 107);
-  position: sticky;
-  top: 0;
-  gap: 10px;
-  z-index: 100;
+  border-bottom: 1px solid #6b6b6b;
 }
 
 /* Log level filter dropdown */
@@ -88,8 +82,178 @@
   color: rgb(171, 165, 165);
 }
 
-.log-message{
+.log-message {
   padding: 5px;
   margin-bottom: 6px;
   border-bottom: 1px solid #444;
 }
+
+#log-window-header {
+  position: sticky;
+  top: 0;
+  gap: 10px;
+  z-index: 100;
+}
+
+#log-window-sections {
+  background: #3d3d3d;
+  display: flex;
+  border-bottom: 1px solid #6b6b6b;
+
+  .log-window-section-tab {
+    padding: 10px;
+    cursor: pointer;
+
+    &:hover {
+      background: #6b6b6b;
+    }
+
+    &[data-active="true"] {
+      color: #a8c7fa;
+      border-bottom: 2px solid #a8c7fa;
+    }
+  }
+}
+
+
+/* Network tab container */
+#network-list {
+  padding: 10px;
+  font-family: monospace;
+  font-size: 12px;
+  color: white;
+}
+
+/* Each network request entry */
+#network-list > div {
+  background: #333;
+  padding: 8px;
+  margin-bottom: 8px;
+  border-radius: 6px;
+  border-left: 4px solid #4caf50; /* Green for successful requests */
+  word-break: break-word;
+}
+
+/* Failed requests */
+#network-list > div[data-status="FAILED"] {
+  border-left-color: #ff4d4d; /* Red for errors */
+}
+
+/* Request URL & method */
+#network-list strong {
+  font-size: 13px;
+  color: #a8c7fa;
+}
+
+/* Status & duration */
+#network-list span {
+  font-size: 12px;
+  font-weight: bold;
+}
+
+/* Request details section */
+#network-list details {
+  background: #222;
+  padding: 6px;
+  border-radius: 4px;
+  margin-top: 4px;
+}
+
+/* Summary (expandable section) */
+#network-list summary {
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: bold;
+  color: #f1c40f; /* Yellow highlight */
+}
+
+/* JSON response styling */
+#network-list pre {
+  background: #1e1e1e;
+  color: #e6e6e6;
+  padding: 6px;
+  border-radius: 4px;
+  overflow-x: auto;
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+/* Scrollbar styling */
+#network-list pre::-webkit-scrollbar {
+  width: 6px;
+}
+#network-list pre::-webkit-scrollbar-thumb {
+  background: #6b6b6b;
+  border-radius: 3px;
+}
+
+
+/* Network tab container */
+#network-list {
+  padding: 10px;
+  font-family: monospace;
+  font-size: 12px;
+  color: white;
+
+  /* Each network request entry */
+  > div {
+    background: #333;
+    padding: 8px;
+    margin-bottom: 8px;
+    border-radius: 6px;
+    border-left: 4px solid #4caf50; /* Green for successful requests */
+    word-break: break-word;
+
+    &[data-status="FAILED"] {
+      border-left-color: #ff4d4d; /* Red for errors */
+    }
+
+    /* Request URL & method */
+    strong {
+      font-size: 13px;
+      color: #a8c7fa;
+    }
+
+    /* Status & duration */
+    span {
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    /* Request details section */
+    details {
+      background: #222;
+      padding: 6px;
+      border-radius: 4px;
+      margin-top: 4px;
+
+      summary {
+        cursor: pointer;
+        font-size: 12px;
+        font-weight: bold;
+        color: #f1c40f; /* Yellow highlight */
+      }
+
+      pre {
+        background: #1e1e1e;
+        color: #e6e6e6;
+        padding: 6px;
+        border-radius: 4px;
+        overflow-x: auto;
+        font-size: 11px;
+        line-height: 1.4;
+
+        /* Scrollbar styling */
+        &::-webkit-scrollbar {
+          width: 6px;
+        }
+
+        &::-webkit-scrollbar-thumb {
+          background: #6b6b6b;
+          border-radius: 3px;
+        }
+      }
+    }
+  }
+}
+

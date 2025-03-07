@@ -65,7 +65,7 @@
     </div>
 
     <!-- Load your logging library -->
-    <script src="https://cdn.jsdelivr.net/npm/logtohtml@0.0.10/dist/bundle.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/logtohtml@0.0.11/dist/bundle.js"></script>
     <!-- <script type="module" src="../index.js"></script> -->
     <!-- <script src="../dist/bundle.js"></script> -->
     <!-- <script src="https://cdn.jsdelivr.net/npm/logtohtml@0.0.5/dist/bundle.js"></script> -->
@@ -109,9 +109,7 @@
             console.count("Counter Test");
         }
 
-        // Auto-generate logs every 3 seconds
-        setTimeout(testConsoleLogs, 3000);
-
+    
         function addParam() {
             const url = new URL(window.location.href);
             url.searchParams.set("logtohtml", "true");

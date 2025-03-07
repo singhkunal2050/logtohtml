@@ -1,3 +1,6 @@
+### 0.0.11 04th Mar 2024
+- Added Support for Network Tracing
+
 ### 0.0.10 04th Mar 2024
 - Added Version details
 
