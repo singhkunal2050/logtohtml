@@ -1,67 +1,72 @@
-
-
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Demo of Log to HTML Library</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-            padding: 20px;
-            background-color: #121212;
-            color: white;
-        }
-        button {
-            padding: 10px 20px;
-            font-size: 16px;
-            cursor: pointer;
-            margin: 10px;
-            border: none;
-            border-radius: 5px;
-            background-color: #007BFF;
-            color: white;
-        }
-        button:hover {
-            background-color: #0056b3;
-        }
+      body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+        padding: 20px;
+        background-color: #121212;
+        color: white;
+      }
+      button {
+        padding: 10px 20px;
+        font-size: 16px;
+        cursor: pointer;
+        margin: 10px;
+        border: none;
+        border-radius: 5px;
+        background-color: #007bff;
+        color: white;
+      }
+      button:hover {
+        background-color: #0056b3;
+      }
 
-        .links {
-            margin-top: 20px;
-        }
-        .links a {
-            display: block;
-            color: #00d4ff;
-            text-decoration: none;
-            font-size: 18px;
-            margin: 5px 0;
-        }
-        .links a:hover {
-            text-decoration: underline;
-        }
+      .links {
+        margin-top: 20px;
+      }
+      .links a {
+        display: block;
+        color: #00d4ff;
+        text-decoration: none;
+        font-size: 18px;
+        margin: 5px 0;
+      }
+      .links a:hover {
+        text-decoration: underline;
+      }
 
-        code{
-            background-color: #434242;
-            cursor: pointer;
-        }
-        code:hover{
-            background-color: #00d4ff;
-        }
+      code {
+        background-color: #434242;
+        cursor: pointer;
+      }
+      code:hover {
+        background-color: #00d4ff;
+      }
     </style>
-</head>
-<body>
-
+  </head>
+  <body>
     <h1>Demo of Log to HTML Library</h1>
     <p>Click the button below to test various console log messages.</p>
-    <p>Ensure <code onclick="addParam()">?logtohtml=true</code> in the URL to test the log window</p>
+    <p>
+      Ensure <code onclick="addParam()">?logtohtml=true</code> in the URL to
+      test the log window
+    </p>
     <button onclick="testConsoleLogs()">Generate Logs</button>
+    <button onclick="testRealFetch()"> test Network Logs</button> 
 
     <div class="links">
-        <p>More details:</p>
-        <a href="https://github.com/singhkunal2050/logtohtml" target="_blank">GitHub Repository</a>
-        <a href="https://www.npmjs.com/package/logtohtml" target="_blank">NPM Package</a>
+      <p>More details:</p>
+      <a href="https://github.com/singhkunal2050/logtohtml" target="_blank"
+        >GitHub Repository</a
+      >
+      <a href="https://www.npmjs.com/package/logtohtml" target="_blank"
+        >NPM Package</a
+      >
     </div>
 
     <!-- Load your logging library -->
@@ -71,51 +76,111 @@
     <!-- <script src="https://cdn.jsdelivr.net/npm/logtohtml@0.0.5/dist/bundle.js"></script> -->
 
     <script>
-        function testConsoleLogs() {
-            console.log("This is a simple log message.");
-            console.info("This is an info message.");
-            console.warn("This is a warning message.");
-            console.error("This is an error message.", new Error("Sample error"));
+      function testConsoleLogs() {
+        console.log("This is a simple log message.");
+        console.info("This is an info message.");
+        console.warn("This is a warning message.");
+        console.error("This is an error message.", new Error("Sample error"));
 
-            console.debug("Debug message with data:", { key: "value", numbers: [1, 2, 3] });
+        console.debug("Debug message with data:", {
+          key: "value",
+          numbers: [1, 2, 3],
+        });
 
-            console.log("%cStyled Log Message", "color: cyan; font-weight: bold; background: black; padding: 5px;");
+        console.log(
+          "%cStyled Log Message",
+          "color: cyan; font-weight: bold; background: black; padding: 5px;"
+        );
 
-            console.group("Grouped Logs");
-            console.log("Inside group - log 1");
-            console.log("Inside group - log 2");
-            console.groupEnd();
+        console.group("Grouped Logs");
+        console.log("Inside group - log 1");
+        console.log("Inside group - log 2");
+        console.groupEnd();
 
-            console.table([
-                { name: "Alice", age: 25 },
-                { name: "Bob", age: 30 },
-                { name: "Charlie", age: 35 }
-            ]);
+        console.table([
+          { name: "Alice", age: 25 },
+          { name: "Bob", age: 30 },
+          { name: "Charlie", age: 35 },
+        ]);
 
-            console.time("Timer Test");
-            setTimeout(() => {
-                console.timeEnd("Timer Test");
-            }, 500);
+        console.time("Timer Test");
+        setTimeout(() => {
+          console.timeEnd("Timer Test");
+        }, 500);
 
+        try {
+          throw new Error("Test Exception");
+        } catch (e) {
+          console.error("Caught Exception:", e);
+        }
+
+        console.assert(false, "This is an assertion failure message.");
+
+        console.count("Counter Test");
+        console.count("Counter Test");
+      }
+
+      function addParam() {
+        const url = new URL(window.location.href);
+        url.searchParams.set("logtohtml", "true");
+        window.location.href = url.toString();
+      }
+
+      async function testRealFetch() {
+        const urls = [
+          {
+            url: "https://jsonplaceholder.typicode.com/posts/1",
+            label: "✅ 200 OK",
+          }, // Successful GET
+          {
+            url: "https://jsonplaceholder.typicode.com/invalid-url",
+            label: "❌ 404 Not Found",
+          }, // Not Found
+          {
+            url: "https://httpstat.us/500",
+            label: "🔥 500 Internal Server Error",
+          }, // Server Error
+          { url: "https://httpstat.us/302", label: "🔄 302 Redirect" }, // Redirect
+          { url: "https://httpstat.us/401", label: "🚫 401 Unauthorized" }, // Unauthorized
+          { url: "https://httpstat.us/403", label: "🚷 403 Forbidden" }, // Forbidden
+          { url: "https://httpstat.us/418", label: "☕ 418 I'm a teapot" }, // Easter Egg
+          { url: "https://httpstat.us/429", label: "⏳ 429 Too Many Requests" }, // Rate Limit
+          { url: "https://httpstat.us/301", label: "➡️ 301 Moved Permanently" }, // Permanent Redirect
+          {
+            url: "https://jsonplaceholder.typicode.com/comments",
+            label: "📝 JSON Response",
+          }, // JSON Data
+        ];
+
+        for (let { url, label } of urls) {
+          try {
+            const startTime = performance.now();
+            const response = await fetch(url);
+            const duration = (performance.now() - startTime).toFixed(2);
+
+            const headers = {};
+            response.headers.forEach((value, key) => {
+              headers[key] = value;
+            });
+
+            let body;
             try {
-                throw new Error("Test Exception");
-            } catch (e) {
-                console.error("Caught Exception:", e);
+              body = await response.text();
+            } catch (err) {
+              body = "Unable to read body";
             }
 
-            console.assert(false, "This is an assertion failure message.");
-
-            console.count("Counter Test");
-            console.count("Counter Test");
+            console.log(`\n${label}`);
+            console.log(`URL: ${url}`);
+            console.log(`Status: ${response.status} ${response.statusText}`);
+            console.log(`Headers:`, headers);
+            console.log(`Response Body:`, body.substring(0, 300)); // Trim long responses
+            console.log(`Duration: ${duration} ms`);
+          } catch (error) {
+            console.error(`\n${label} - Error fetching ${url}:`, error.message);
+          }
         }
-
-    
-        function addParam() {
-            const url = new URL(window.location.href);
-            url.searchParams.set("logtohtml", "true");
-            window.location.href = url.toString();
-        }
+      }
     </script>
-
-</body>
+  </body>
 </html>
