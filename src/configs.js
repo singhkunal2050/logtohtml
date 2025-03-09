@@ -15,8 +15,8 @@ export const logColors = {
 };
 
 export const tabs = {
-  console: "Console",
-  network: "Network",
+  console: "console",
+  network: "network",
 };
 
 // Filter options

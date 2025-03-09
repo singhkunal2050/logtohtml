@@ -7,7 +7,7 @@
     "prepare": "npm run build",
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "webpack --mode production",
-    "watch": "nodemon --watch src --ext js,css,html --exec 'npm run build'"
+    "watch": "nodemon --watch src --ext js,jsx,css,html --exec 'npm run build'"
   },
   "keywords": [
     "console",
@@ -18,7 +18,14 @@
   ],
   "author": "@singhkunal2050",
   "license": "ISC",
+  "dependencies": {
+    "fuse.js": "^7.1.0",
+    "react": "npm:@preact/compat",
+    "react-dom": "npm:@preact/compat"
+  },
   "devDependencies": {
+    "@babel/plugin-transform-react-jsx": "^7.25.9",
+    "@babel/preset-env": "^7.26.9",
     "babel-loader": "^9.2.1",
     "css-loader": "^7.1.2",
     "style-loader": "^4.0.0",
