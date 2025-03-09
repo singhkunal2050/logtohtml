@@ -3,6 +3,8 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- jqyery -->
+    <!-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> -->
     <title>Demo of Log to HTML Library</title>
     <style>
       body {
@@ -47,32 +49,50 @@
       code:hover {
         background-color: #00d4ff;
       }
+
+      .container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: center;
+        gap:20px;
+      }
+
+      img{
+        max-width: 100%;
+      }
     </style>
   </head>
   <body>
-    <h1>Demo of Log to HTML Library</h1>
-    <p>Click the button below to test various console log messages.</p>
-    <p>
-      Ensure <code onclick="addParam()">?logtohtml=true</code> in the URL to
-      test the log window
-    </p>
-    <button onclick="testConsoleLogs()">Generate Logs</button>
-    <button onclick="testRealFetch()"> test Network Logs</button> 
+    <div class="container">
+      <div>
+        <h1>Demo of Log to HTML Library</h1>
+        <p>Click the button below to test various console log messages.</p>
+        <p>
+          Ensure <code onclick="addParam()">?logtohtml=true</code> in the URL to
+          test the log window
+        </p>
+        <button onclick="testConsoleLogs()">Generate Logs</button>
+        <button onclick="testRealFetch()">test Network Logs</button>
 
-    <div class="links">
-      <p>More details:</p>
-      <a href="https://github.com/singhkunal2050/logtohtml" target="_blank"
-        >GitHub Repository</a
-      >
-      <a href="https://www.npmjs.com/package/logtohtml" target="_blank"
-        >NPM Package</a
-      >
+        <div class="links">
+          <p>More details:</p>
+          <a href="https://github.com/singhkunal2050/logtohtml" target="_blank"
+            >GitHub Repository</a
+          >
+          <a href="https://www.npmjs.com/package/logtohtml" target="_blank"
+            >NPM Package</a
+          >
+        </div>
+      </div>
+
+      <img src="//picsum.photos/600/300" alt="Picsum Image" />
     </div>
 
     <!-- Load your logging library -->
-    <script src="https://cdn.jsdelivr.net/npm/logtohtml@0.0.11/dist/bundle.js"></script>
+    <!-- <script src="https://cdn.jsdelivr.net/npm/logtohtml@0.0.11/dist/bundle.js"></script> -->
     <!-- <script type="module" src="../index.js"></script> -->
-    <!-- <script src="../dist/bundle.js"></script> -->
+    <script src="../dist/bundle.js"></script>
     <!-- <script src="https://cdn.jsdelivr.net/npm/logtohtml@0.0.5/dist/bundle.js"></script> -->
 
     <script>
@@ -181,6 +201,47 @@
           }
         }
       }
+
+      function trackRequests() {
+        // Capture images already loaded
+        const resources = performance.getEntriesByType("resource");
+        //   .filter((r) => r.initiatorType === "img");
+
+        resources.forEach((resource) => {
+          console.log("[Image Loaded]", {
+            url: resource.name,
+            duration: resource.duration.toFixed(2) + "ms",
+            transferSize: resource.transferSize + " bytes",
+            encodedSize: resource.encodedBodySize + " bytes",
+          });
+        });
+
+        // Track dynamically added images
+        const observer = new MutationObserver((mutations) => {
+          mutations.forEach((mutation) => {
+            mutation.addedNodes.forEach((node) => {
+              if (node.tagName === "IMG") {
+                console.log("[New Image Added]", { url: node.src });
+
+                // Listen for load/error events
+                node.onload = () =>
+                  console.log("[Image Load Success]", { url: node.src });
+                node.onerror = () =>
+                  console.log("[Image Load Failed]", { url: node.src });
+              }
+            });
+          });
+        });
+
+        observer.observe(document.body, { childList: true, subtree: true });
+
+        console.log("[Image Tracker] Monitoring image loads...");
+      }
+
+      // Run on page load
+      window.addEventListener("load", () => {
+        setTimeout(trackRequests, 1000);
+      });
     </script>
   </body>
 </html>

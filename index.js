@@ -1,4 +1,5 @@
-import logWindow from "./src/logWindow.js";
+// import logWindow from "./src/logWindow.js";
+import logWindow from "./src/main.js";
 import packageJson from "./package.json";   
 const LIBRARY_VERSION = packageJson.version ?? 'debug';
 
