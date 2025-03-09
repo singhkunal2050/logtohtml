@@ -15,21 +15,36 @@ export default function LogWindow() {
   const [search, setSearch] = useState("");
 
   const clearLogs = () => {
-    if(activeTab === tabs.console) {
+    if (activeTab === tabs.console) {
       setLogs([]);
+    } else if(activeTab === tabs.network) {
+      setNetworkRequests([]);
     }
   };
 
   useEffect(() => {
     setLogs([...window.__logBuffer]);
+    setNetworkRequests([...window.__networkBuffer]);
 
     // Listen for new logs without overriding console again
     const handleNewLog = (event) => {
       setLogs((prevLogs) => [...prevLogs, event.detail]);
     };
 
+    const handleNewNetworkLog = (event) => {
+      setNetworkRequests((prevNetworkRequests) => [
+        ...prevNetworkRequests,
+        event.detail,
+      ]);
+    };
+
     window.addEventListener("new-log", handleNewLog);
-    return () => window.removeEventListener("new-log", handleNewLog);
+    window.addEventListener("new-network-log", handleNewNetworkLog);
+
+    return () => {
+      window.removeEventListener("new-log", handleNewLog);
+      window.removeEventListener("new-network-log", handleNewNetworkLog);
+    };
   }, []);
 
   return (

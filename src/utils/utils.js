@@ -43,6 +43,96 @@ export const utils = {
     window.__logBuffer = logBuffer; // Expose for debugging
   },
 
+  overrideFetchXHR() {
+    const networkBuffer = [];
+
+    const originalFetch = window.fetch;
+
+    function logNetworkRequest(entry) {
+      networkBuffer.push(entry);
+      window.dispatchEvent(
+        new CustomEvent("new-network-log", { detail: entry })
+      ); // Emit event for live updates
+    }
+
+    window.fetch = async (...args) => {
+      const [resource, config] = args;
+      const method = config?.method || "GET";
+      const body = config?.body || null;
+      const headers = config?.headers || {};
+
+      const startTime = performance.now();
+      return originalFetch(...args)
+        .then(async (response) => {
+          const endTime = performance.now();
+          const duration = (endTime - startTime).toFixed(2);
+          const clonedResponse = response.clone();
+          const responseBody = await clonedResponse.text();
+
+          const logEntry = {
+            url: resource,
+            method,
+            requestBody: body,
+            requestHeaders: headers,
+            status: response.status,
+            statusText: response.statusText,
+            responseHeaders: Object.fromEntries(response.headers.entries()),
+            responseBody,
+            duration,
+          };
+
+          logNetworkRequest(logEntry);
+          return response;
+        })
+        .catch((error) => {
+          const logEntry = {
+            url: resource,
+            method,
+            requestBody: body,
+            requestHeaders: headers,
+            status: "FAILED",
+            responseBody: error.message,
+          };
+
+          logNetworkRequest(logEntry);
+          throw error;
+        });
+    };
+
+    const originalXHR = window.XMLHttpRequest;
+
+    window.XMLHttpRequest = function () {
+      const xhr = new originalXHR();
+      const startTime = performance.now();
+      let requestInfo = {};
+
+      xhr.open = function (method, url) {
+        requestInfo = { url, method };
+        originalXHR.prototype.open.apply(this, arguments);
+      };
+
+      xhr.setRequestHeader = function (header, value) {
+        if (!requestInfo.headers) requestInfo.headers = {};
+        requestInfo.headers[header] = value;
+        originalXHR.prototype.setRequestHeader.apply(this, arguments);
+      };
+
+      xhr.addEventListener("load", () => {
+        const endTime = performance.now();
+        requestInfo.duration = (endTime - startTime).toFixed(2);
+        requestInfo.status = xhr.status;
+        requestInfo.statusText = xhr.statusText;
+        requestInfo.responseBody = xhr.responseText;
+
+        logNetworkRequest(requestInfo);
+      });
+
+      return xhr;
+    };
+
+    window.__networkBuffer = networkBuffer; // Expose for debugging
+  },
+
   getLogStatusColor(status) {
     const statusN = Number(status);
     if (statusN >= 200 && statusN < 300) {

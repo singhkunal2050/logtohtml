@@ -2,6 +2,7 @@ import { h, render } from "preact";
 import LogWindowComponent from "./components/logWindow.jsx"; // PascalCase
 import styles from "./styles/style.css"; // Import the CSS file
 
+
 export default class LogWindow extends HTMLElement {
   constructor() {
     super();

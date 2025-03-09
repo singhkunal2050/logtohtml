@@ -8,6 +8,7 @@ const LIBRARY_VERSION = packageJson.version ?? "debug";
 // If logtohtml query param is present, create the log window and override console
 if (new URLSearchParams(window.location.search).get("logtohtml") === "true") {
   utils.overrideConsole();
+  utils.overrideFetchXHR();
   console.log(`[LOGTOHTML] Library version: ${LIBRARY_VERSION}`);
   const logWindowElement = document.createElement("log-window");
   document.body.appendChild(logWindowElement);
