@@ -15,7 +15,6 @@ export default class LogWindow extends HTMLElement {
     shadowRoot.innerHTML = "";
 
     const styleNode = document.createElement("style");
-    console.log({ styles });
     styleNode.textContent = styles;
     shadowRoot.appendChild(styleNode);
     render(<LogWindowComponent />, shadowRoot);

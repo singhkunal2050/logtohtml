@@ -1,13 +1,31 @@
 import { h } from "preact";
+import { logColors } from "../configs.js";
 
-export default function LogContent({ activeTab, logs, networkRequests }) {
+export default function LogContent({ activeTab, logs, networkRequests, filter }) {
+
+  if(filter !== 'all') {
+    logs = logs.filter(log => log.type === filter);
+  }
+
   return (
     <div id="log-content">
       {activeTab === "console" && (
         <div id="log-list">
           {logs.map((log, index) => (
-            <div key={index} class="log-message" data-type="log" style={{ backgroundColor: "transparent" }}>
-              <div>[{log.timestamp}] [LOG] {log.message}</div>
+            <div key={index} class="log-message" data-type={log.type} style={{ backgroundColor: logColors[log.type] || 'transparent' }}>
+              <div>[{log.timestamp}] [{log.type.toUpperCase()}] {log.message}</div>
+
+              {/* Expandable details for objects */}
+              {log.details.some(arg => typeof arg === "object" && arg !== null) && (
+                <details style={{ opacity: 0.8, marginTop: "5px" }}>
+                  <summary >
+                    View Details ({log.type})
+                  </summary>
+                  <pre style={{ whiteSpace: "pre-wrap", color: "#ccc", padding: "5px" }}>
+                    {JSON.stringify(log.details, null, 2)}
+                  </pre>
+                </details>
+              )}
             </div>
           ))}
         </div>
@@ -19,13 +37,15 @@ export default function LogContent({ activeTab, logs, networkRequests }) {
             <div key={index} class="network-message">
               <div>
                 <strong>{request.method} {request.url}</strong>
-                <span style={{ color: request.status === 200 ? "green" : "red" }}>
+                <span style={{ color: request.status === 200 ? "green" : "red", marginLeft: "10px" }}>
                   {request.status} ({request.duration} ms)
                 </span>
               </div>
               <details>
-                <summary>Request Details</summary>
-                <pre>{JSON.stringify(request, null, 2)}</pre>
+                <summary style={{ cursor: "pointer", color: "#007bff" }}>Request Details</summary>
+                <pre style={{ whiteSpace: "pre-wrap", color: "#ccc", padding: "5px" }}>
+                  {JSON.stringify(request, null, 2)}
+                </pre>
               </details>
             </div>
           ))}

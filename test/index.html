@@ -55,10 +55,10 @@
         flex-wrap: wrap;
         justify-content: center;
         align-items: center;
-        gap:20px;
+        gap: 20px;
       }
 
-      img{
+      img {
         max-width: 100%;
       }
     </style>
@@ -95,7 +95,7 @@
     <script src="../dist/bundle.js"></script>
     <!-- <script src="https://cdn.jsdelivr.net/npm/logtohtml@0.0.5/dist/bundle.js"></script> -->
 
-    <script>
+    <script defer>
       function testConsoleLogs() {
         console.log("This is a simple log message.");
         console.info("This is an info message.");
@@ -239,9 +239,12 @@
       }
 
       // Run on page load
-      window.addEventListener("load", () => {
-        setTimeout(trackRequests, 1000);
-      });
+      // window.addEventListener("load", () => {
+      //   setTimeout(() => {
+          trackRequests();
+          testConsoleLogs();
+      //   }, 1000);
+      // });
     </script>
   </body>
 </html>

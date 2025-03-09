@@ -1,4 +1,5 @@
 import { h } from "preact";
+import { logFilters } from "../configs.js";
 
 export default function Header({
   activeTab,
@@ -36,11 +37,9 @@ export default function Header({
           value={filter}
           onChange={(e) => setFilter(e.target.value)}
         >
-          <option value="all">ALL</option>
-          <option value="log">LOG</option>
-          <option value="debug">DEBUG</option>
-          <option value="error">ERROR</option>
-          <option value="warn">WARN</option>
+          {logFilters.map((log) => {
+            return <option value={log}>{log.toLocaleUpperCase()}</option>;
+          })}
         </select>
 
         <div id="clear-logs" onClick={clearLogs}>
