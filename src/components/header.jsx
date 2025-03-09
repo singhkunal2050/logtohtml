@@ -31,7 +31,7 @@ export default function Header({
         </div>
       </div>
 
-      <div id="filter-section">
+      <div id="filter-section"  >
         <select
           id="log-filter"
           value={filter}

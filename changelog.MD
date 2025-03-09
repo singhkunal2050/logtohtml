@@ -1,3 +1,12 @@
+### 0.1.2 09th Mar 2024
+- Readme Update
+
+### 0.1.1 04th Mar 2024
+- Migrated to Preact for 
+- Added support for Network Tracking 
+- Added Support for fuzzy search 
+ 
+
 ### 0.0.11 04th Mar 2024
 - Added Support for Network Tracing
 
