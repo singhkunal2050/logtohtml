@@ -1,10 +1,14 @@
 import { h } from "preact";
 import { logColors } from "../configs.js";
 
-export default function LogContent({ activeTab, logs, networkRequests, filter }) {
+export default function LogContent({ activeTab, logs, networkRequests, filter, search }) {
 
   if(filter !== 'all') {
     logs = logs.filter(log => log.type === filter);
+  }
+
+  if(search.trim() !== '') {
+    logs = logs.filter(log => log.message.toLowerCase().includes(search.toLowerCase()));
   }
 
   return (

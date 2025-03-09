@@ -12,6 +12,7 @@ export default function LogWindow() {
   const [isVisible, setIsVisible] = useState(true);
   const [activeTab, setActiveTab] = useState(tabs.console);
   const [filter, setFilter] = useState("all");
+  const [search, setSearch] = useState("");
 
   const clearLogs = () => {
     if(activeTab === tabs.console) {
@@ -42,11 +43,13 @@ export default function LogWindow() {
             activeTab={activeTab}
             setActiveTab={setActiveTab}
             setFilter={setFilter}
+            setSearch={setSearch}
             clearLogs={clearLogs}
           />
           <Content
             activeTab={activeTab}
             filter={filter}
+            search={search}
             logs={logs}
             networkRequests={networkRequests}
           />
