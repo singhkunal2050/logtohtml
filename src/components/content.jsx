@@ -1,30 +1,36 @@
 import { h } from "preact";
+import Fuse from "fuse.js";
 import { logColors } from "../configs.js";
 
 export default function LogContent({ activeTab, logs, networkRequests, filter, search }) {
+  // Apply filter
+  let filteredLogs = filter !== "all" ? logs.filter(log => log.type === filter) : logs;
 
-  if(filter !== 'all') {
-    logs = logs.filter(log => log.type === filter);
-  }
+  // Fuse.js options for fuzzy search
+  const fuseOptions = {
+    keys: ["message", "details"], // Search within these fields
+    threshold: 0.4, // Adjust fuzzy matching sensitivity (lower = stricter)
+    ignoreLocation: true, // Search anywhere in the string
+    includeMatches: false, // We just need the results
+  };
 
-  if(search.trim() !== '') {
-    logs = logs.filter(log => log.message.toLowerCase().includes(search.toLowerCase()));
+  if (search.trim() !== "") {
+    const fuse = new Fuse(filteredLogs, fuseOptions);
+    filteredLogs = fuse.search(search).map(result => result.item);
   }
 
   return (
     <div id="log-content">
       {activeTab === "console" && (
         <div id="log-list">
-          {logs.map((log, index) => (
+          {filteredLogs.map((log, index) => (
             <div key={index} class="log-message" data-type={log.type} style={{ backgroundColor: logColors[log.type] || 'transparent' }}>
               <div>[{log.timestamp}] [{log.type.toUpperCase()}] {log.message}</div>
 
               {/* Expandable details for objects */}
               {log.details.some(arg => typeof arg === "object" && arg !== null) && (
                 <details style={{ opacity: 0.8, marginTop: "5px" }}>
-                  <summary >
-                    View Details ({log.type})
-                  </summary>
+                  <summary>View Details ({log.type})</summary>
                   <pre style={{ whiteSpace: "pre-wrap", color: "#ccc", padding: "5px" }}>
                     {JSON.stringify(log.details, null, 2)}
                   </pre>
