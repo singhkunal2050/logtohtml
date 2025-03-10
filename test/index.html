@@ -202,47 +202,11 @@
         }
       }
 
-      function trackRequests() {
-        // Capture images already loaded
-        const resources = performance.getEntriesByType("resource");
-        //   .filter((r) => r.initiatorType === "img");
-
-        resources.forEach((resource) => {
-          console.log("[Image Loaded]", {
-            url: resource.name,
-            duration: resource.duration.toFixed(2) + "ms",
-            transferSize: resource.transferSize + " bytes",
-            encodedSize: resource.encodedBodySize + " bytes",
-          });
-        });
-
-        // Track dynamically added images
-        const observer = new MutationObserver((mutations) => {
-          mutations.forEach((mutation) => {
-            mutation.addedNodes.forEach((node) => {
-              if (node.tagName === "IMG") {
-                console.log("[New Image Added]", { url: node.src });
-
-                // Listen for load/error events
-                node.onload = () =>
-                  console.log("[Image Load Success]", { url: node.src });
-                node.onerror = () =>
-                  console.log("[Image Load Failed]", { url: node.src });
-              }
-            });
-          });
-        });
-
-        observer.observe(document.body, { childList: true, subtree: true });
-
-        console.log("[Image Tracker] Monitoring image loads...");
-      }
-
       // Run on page load
       // window.addEventListener("load", () => {
       //   setTimeout(() => {
-          trackRequests();
-          testConsoleLogs();
+          // testRealFetch();
+          // testConsoleLogs();
       //   }, 1000);
       // });
     </script>

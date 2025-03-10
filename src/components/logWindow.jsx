@@ -9,6 +9,7 @@ const LIBRARY_VERSION = packageJson.version ?? "debug";
 export default function LogWindow() {
   const [logs, setLogs] = useState([]);
   const [networkRequests, setNetworkRequests] = useState([]);
+  const [resources, setResources] = useState([]);
   const [isVisible, setIsVisible] = useState(true);
   const [activeTab, setActiveTab] = useState(tabs.console);
   const [filter, setFilter] = useState("all");
@@ -38,8 +39,16 @@ export default function LogWindow() {
       ]);
     };
 
+    const handleNewResource = (event) => {
+      setResources((prevResources) => [
+        ...prevResources,
+        event.detail,
+      ]);
+    };
+
     window.addEventListener("new-log", handleNewLog);
     window.addEventListener("new-network-log", handleNewNetworkLog);
+    window.addEventListener("new-resource", handleNewResource);
 
     return () => {
       window.removeEventListener("new-log", handleNewLog);
@@ -67,6 +76,7 @@ export default function LogWindow() {
             search={search}
             logs={logs}
             networkRequests={networkRequests}
+            resources={resources}
           />
         </div>
       )}

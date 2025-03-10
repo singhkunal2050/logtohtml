@@ -133,6 +133,43 @@ export const utils = {
     window.__networkBuffer = networkBuffer; // Expose for debugging
   },
 
+  overrideResourceMonitoring() {
+    const resourceBuffer = [];
+    console.log("Overriding resource monitoring");
+
+    const observer = new PerformanceObserver((list) => {
+      list.getEntries().forEach((entry) => {
+        // Ignore fetch & XHR (already logged separately)
+        if (
+          entry.entryType === "resource" &&
+          entry.initiatorType !== "fetch" &&
+          entry.initiatorType !== "xmlhttprequest"
+        ) {
+          const resourceEntry = {
+            name: entry.name, // URL of the resource
+            type: entry.initiatorType, // Type (script, img, css, etc.)
+            duration: entry.duration.toFixed(2) + "ms", // Load time
+            size:
+              entry.transferSize > 0
+                ? entry.transferSize + " bytes"
+                : "unknown", // Response size
+            startTime: entry.startTime.toFixed(2) + "ms", // Start time relative to page load
+          };
+
+          console.log("Resource Loaded:", resourceEntry);
+          resourceBuffer.push(resourceEntry);
+          window.dispatchEvent(
+            new CustomEvent("new-resource", { detail: resourceEntry })
+          ); // Emit event for UI updates
+        }
+      });
+    });
+
+    observer.observe({ type: "resource", buffered: true });
+
+    window.__resourceBuffer = resourceBuffer; // Expose for debugging
+  },
+
   getLogStatusColor(status) {
     const statusN = Number(status);
     if (statusN >= 200 && statusN < 300) {

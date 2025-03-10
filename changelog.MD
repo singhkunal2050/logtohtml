@@ -1,4 +1,7 @@
 
+### 0.1.5 09th Mar 2024
+- Added Resource Monitoring
+
 ### 0.1.4 09th Mar 2024
 - Updated Readme to use unpkg
 
