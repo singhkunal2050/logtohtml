@@ -1,3 +1,6 @@
+### 0.1.3 09th Mar 2024
+- Added npmignore file to reduce bundle size
+
 ### 0.1.2 09th Mar 2024
 - Readme Update
 
