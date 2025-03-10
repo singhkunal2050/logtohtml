@@ -1,3 +1,7 @@
+
+### 0.1.4 09th Mar 2024
+- Updated Readme to use unpkg
+
 ### 0.1.3 09th Mar 2024
 - Added npmignore file to reduce bundle size
 
