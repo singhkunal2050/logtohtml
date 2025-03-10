@@ -19,7 +19,7 @@ OR
 1. Using CDN
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/logtohtml/dist/bundle.js"></script>
+<script src="https://unpkg.com/logtohtml@latest/dist/bundle.js"></script>
 ```
 
 2. Add Query Param `?logtohtml=true` to your URL for testing
