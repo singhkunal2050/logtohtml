@@ -1,4 +1,5 @@
 ## Log to HTML
+<a href="https://pkg-size.dev/logtohtml"><img src="https://pkg-size.dev/badge/install/1985739" title="Install size for logtohtml"></a>
 
 A lightweight JavaScript utility that adds a dynamic log window to your application, beautifies console outputs, and enhances debugging on mobile & non desktop devices where we can not access the browser console.
 
