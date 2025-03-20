@@ -1,6 +1,10 @@
 {
   "name": "logtohtml",
-  "version": "0.1.5",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/singhkunal2050/logtohtml.git"
+  },
+  "version": "0.1.51",
   "description": "A lightweight JavaScript utility that adds a dynamic log window to your application, beautifies console outputs, and enhances debugging on mobile interfaces.",
   "main": "index.js",
   "scripts": {
