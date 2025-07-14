@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LogToHTML - Mobile DevTools for Web Apps</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap');
+        
+        body {
+            font-family: 'JetBrains Mono', monospace;
+            background: #1e1e1e;
+            color: #cccccc;
+        }
+        
+        .devtools-border {
+            border: 1px solid #3c3c3c;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+        
+        .tab-active {
+            background: #2d2d30;
+            border-bottom: 2px solid #007acc;
+        }
+        
+        .tab-inactive {
+            background: #252526;
+            border-bottom: 1px solid #3c3c3c;
+        }
+        
+        .console-line {
+            border-bottom: 1px solid #2d2d30;
+            font-family: 'JetBrains Mono', monospace;
+        }
+        
+        .log-info { color: #cccccc; }
+        .log-warn { color: #ffcc02; }
+        .log-error { color: #f48771; }
+        .log-success { color: #89d185; }
+        
+        .mobile-frame {
+            background: #2d2d30;
+            border-radius: 20px;
+            padding: 4px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+        }
+        
+        .mobile-screen {
+            background: #ffffff;
+            border-radius: 16px;
+            overflow: hidden;
+        }
+        
+        .glow {
+            box-shadow: 0 0 20px rgba(0, 122, 204, 0.3);
+        }
+        
+        .typing-animation {
+            animation: typing 3s steps(40, end) infinite;
+        }
+        
+        @keyframes typing {
+            0%, 100% { width: 0; }
+            50% { width: 100%; }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .pulse-dot {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-gray-300">
+    
+    <!-- Header - DevTools Style -->
+    <header class="bg-gray-800 border-b border-gray-700 px-4 py-2">
+        <div class="max-w-6xl mx-auto flex items-center justify-between">
+            <div class="flex items-center space-x-4">
+                <div class="flex items-center space-x-2">
+                    <div class="w-3 h-3 bg-red-500 rounded-full"></div>
+                    <div class="w-3 h-3 bg-yellow-500 rounded-full"></div>
+                    <div class="w-3 h-3 bg-green-500 rounded-full"></div>
+                </div>
+                <h1 class="text-xl font-bold text-blue-400">LogToHTML</h1>
+            </div>
+            <div class="flex items-center space-x-4">
+                <a href="https://github.com/singhkunal2050/logtohtml" class="text-gray-400 hover:text-white transition-colors">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
+                    </svg>
+                </a>
+                <a href="https://www.npmjs.com/package/logtohtml" class="text-gray-400 hover:text-white transition-colors">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M1.763 0C.786 0 0 .786 0 1.763v20.474C0 23.214.786 24 1.763 24h20.474c.977 0 1.763-.786 1.763-1.763V1.763C24 .786 23.214 0 22.237 0H1.763zM5.13 5.323l13.837.019-.009 13.836h-3.464l.01-10.382h-3.456L12.04 19.17H8.595l-.01-10.377H5.113l.017-3.47z"/>
+                    </svg>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- DevTools Tabs -->
+    <div class="bg-gray-800 border-b border-gray-700 px-4">
+        <div class="max-w-6xl mx-auto">
+            <div class="flex">
+                <div class="tab-active px-4 py-2 text-sm cursor-pointer">Console</div>
+                <div class="tab-inactive px-4 py-2 text-sm cursor-pointer text-gray-400">Elements</div>
+                <div class="tab-inactive px-4 py-2 text-sm cursor-pointer text-gray-400">Network</div>
+                <div class="tab-inactive px-4 py-2 text-sm cursor-pointer text-gray-400">Sources</div>
+                <div class="tab-inactive px-4 py-2 text-sm cursor-pointer text-gray-400">Mobile</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="max-w-6xl mx-auto px-4 py-8">
+        
+        <!-- Hero Section -->
+        <section class="text-center mb-16">
+            <div class="mb-8">
+                <h2 class="text-4xl md:text-6xl font-bold mb-4">
+                    <span class="text-blue-400">Mobile</span>
+                    <span class="text-green-400">DevTools</span>
+                </h2>
+                <p class="text-xl text-gray-400 mb-8">
+                    Lightweight debugging console for mobile web applications
+                </p>
+                <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                    <button class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors">
+                        npm install logtohtml
+                    </button>
+                    <a href="https://singhkunal2050.github.io/logtohtml/test/index.html?logtohtml=true" 
+                       class="bg-gray-700 hover:bg-gray-600 text-white px-6 py-3 rounded-lg font-semibold transition-colors inline-block">
+                        Live Demo
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Demo Section -->
+        <section class="grid md:grid-cols-2 gap-12 mb-16">
+            
+            <!-- Mobile Preview -->
+            <div class="flex justify-center">
+                <div class="mobile-frame w-64 h-96">
+                    <div class="mobile-screen h-full relative">
+                        <!-- App Header -->
+                        <div class="bg-blue-600 text-white p-4 text-center">
+                            <h3 class="font-semibold">Your Web App</h3>
+                        </div>
+                        
+                        <!-- App Content -->
+                        <div class="p-4 bg-white text-gray-900 h-32">
+                            <button class="bg-blue-500 text-white px-4 py-2 rounded mb-2 text-sm">Click Me</button>
+                            <p class="text-sm">Mobile web application running...</p>
+                        </div>
+                        
+                        <!-- LogToHTML Console -->
+                        <div class="bg-gray-900 text-gray-300 p-3 h-60 overflow-y-auto text-xs">
+                            <div class="flex items-center justify-between mb-2 pb-1 border-b border-gray-700">
+                                <span class="text-blue-400 font-semibold">Console</span>
+                                <div class="flex space-x-1">
+                                    <div class="w-2 h-2 bg-gray-600 rounded-full"></div>
+                                    <div class="w-2 h-2 bg-gray-600 rounded-full"></div>
+                                    <div class="w-2 h-2 bg-red-500 rounded-full pulse-dot"></div>
+                                </div>
+                            </div>
+                            <div class="space-y-1">
+                                <div class="console-line py-1 log-info">
+                                    <span class="text-gray-500">▶</span> App initialized
+                                </div>
+                                <div class="console-line py-1 log-success">
+                                    <span class="text-gray-500">✓</span> API connected
+                                </div>
+                                <div class="console-line py-1 log-warn">
+                                    <span class="text-gray-500">⚠</span> Slow network detected
+                                </div>
+                                <div class="console-line py-1 log-error">
+                                    <span class="text-gray-500">✗</span> Error: Cannot read property 'data'
+                                </div>
+                                <div class="console-line py-1 log-info">
+                                    <span class="text-gray-500">▶</span> User clicked button
+                                </div>
+                                <div class="console-line py-1 log-success">
+                                    <span class="text-gray-500">✓</span> Data fetched successfully
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Features -->
+            <div class="space-y-8">
+                <div class="fade-in">
+                    <h3 class="text-xl font-semibold mb-4 text-blue-400">🚀 Quick Setup</h3>
+                    <div class="bg-gray-800 p-4 rounded-lg devtools-border">
+                        <pre class="text-sm text-gray-300"><code>npm install logtohtml</code></pre>
+                        <p class="text-gray-400 mt-2 text-sm">Add ?logtohtml=true to your URL and start debugging</p>
+                    </div>
+                </div>
+                
+                <div class="fade-in">
+                    <h3 class="text-xl font-semibold mb-4 text-green-400">📱 Mobile First</h3>
+                    <p class="text-gray-400">
+                        Access console logs, errors, and debugging info directly on mobile devices 
+                        where traditional DevTools aren't available.
+                    </p>
+                </div>
+                
+                <div class="fade-in">
+                    <h3 class="text-xl font-semibold mb-4 text-yellow-400">🎨 Beautiful UI</h3>
+                    <p class="text-gray-400">
+                        Familiar DevTools-inspired interface with syntax highlighting, 
+                        collapsible objects, and intuitive navigation.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Installation Section -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-center">Installation & Usage</h2>
+            
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="bg-gray-800 p-6 rounded-lg devtools-border">
+                    <h3 class="text-lg font-semibold mb-4 text-blue-400">NPM Installation</h3>
+                    <pre class="bg-gray-900 p-4 rounded text-sm overflow-x-auto"><code>npm install logtohtml
+
+// Import and use
+import 'logtohtml';</code></pre>
+                </div>
+                
+                <div class="bg-gray-800 p-6 rounded-lg devtools-border">
+                    <h3 class="text-lg font-semibold mb-4 text-green-400">CDN Usage</h3>
+                    <pre class="bg-gray-900 p-4 rounded text-sm overflow-x-auto"><code>&lt;script src="https://unpkg.com/logtohtml@latest/dist/bundle.js"&gt;&lt;/script&gt;</code></pre>
+                </div>
+            </div>
+            
+            <div class="mt-8 text-center">
+                <div class="bg-gray-800 p-6 rounded-lg devtools-border inline-block">
+                    <h3 class="text-lg font-semibold mb-4 text-yellow-400">Activate Debug Mode</h3>
+                    <p class="text-gray-400 mb-2">Add query parameter to your URL:</p>
+                    <pre class="bg-gray-900 p-4 rounded text-sm"><code>yourapp.com?logtohtml=true</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- Benefits Section -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-center">Why LogToHTML?</h2>
+            
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="bg-gray-800 p-6 rounded-lg devtools-border text-center">
+                    <div class="text-4xl mb-4">🔧</div>
+                    <h3 class="text-xl font-semibold mb-4 text-blue-400">Debug Anywhere</h3>
+                    <p class="text-gray-400">
+                        Access console logs on mobile devices, tablets, and any environment 
+                        where DevTools aren't available.
+                    </p>
+                </div>
+                
+                <div class="bg-gray-800 p-6 rounded-lg devtools-border text-center">
+                    <div class="text-4xl mb-4">⚡</div>
+                    <h3 class="text-xl font-semibold mb-4 text-green-400">Lightweight</h3>
+                    <p class="text-gray-400">
+                        Minimal bundle size with zero dependencies. Only loads when needed 
+                        via query parameter activation.
+                    </p>
+                </div>
+                
+                <div class="bg-gray-800 p-6 rounded-lg devtools-border text-center">
+                    <div class="text-4xl mb-4">🎯</div>
+                    <h3 class="text-xl font-semibold mb-4 text-yellow-400">QA Friendly</h3>
+                    <p class="text-gray-400">
+                        Perfect for QA teams testing on real devices. Share debug info 
+                        easily with developers.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA Section -->
+        <section class="text-center bg-gray-800 p-8 rounded-lg devtools-border glow">
+            <h2 class="text-3xl font-bold mb-4">Ready to Debug Mobile Apps?</h2>
+            <p class="text-gray-400 mb-8">
+                Join developers who are already using LogToHTML to debug mobile web applications
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <button class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg font-semibold transition-colors">
+                    Get Started
+                </button>
+                <a href="https://singhkunal2050.github.io/logtohtml/test/index.html?logtohtml=true" 
+                   class="bg-gray-700 hover:bg-gray-600 text-white px-8 py-3 rounded-lg font-semibold transition-colors inline-block">
+                    Try Demo
+                </a>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 border-t border-gray-700 mt-16 py-8">
+        <div class="max-w-6xl mx-auto px-4 text-center">
+            <div class="flex justify-center space-x-6 mb-4">
+                <a href="https://github.com/singhkunal2050/logtohtml" class="text-gray-400 hover:text-white transition-colors">
+                    GitHub
+                </a>
+                <a href="https://www.npmjs.com/package/logtohtml" class="text-gray-400 hover:text-white transition-colors">
+                    NPM
+                </a>
+                <a href="https://singhkunal2050.github.io/logtohtml/test/index.html?logtohtml=true" class="text-gray-400 hover:text-white transition-colors">
+                    Demo
+                </a>
+            </div>
+            <p class="text-gray-400">
+                MIT © <a href="https://github.com/singhkunal2050" class="text-blue-400 hover:text-blue-300">Kunal Singh</a>
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        // Add some interactive elements
+        document.querySelectorAll('.tab-inactive').forEach(tab => {
+            tab.addEventListener('click', function() {
+                document.querySelectorAll('.tab-active, .tab-inactive').forEach(t => {
+                    t.className = 'tab-inactive px-4 py-2 text-sm cursor-pointer text-gray-400';
+                });
+                this.className = 'tab-active px-4 py-2 text-sm cursor-pointer';
+            });
+        });
+        
+        // Simulate console activity
+        function simulateConsoleActivity() {
+            const consoleLines = document.querySelectorAll('.console-line');
+            consoleLines.forEach((line, index) => {
+                setTimeout(() => {
+                    line.style.opacity = '0.5';
+                    setTimeout(() => {
+                        line.style.opacity = '1';
+                    }, 200);
+                }, index * 500);
+            });
+        }
+        
+        // Start simulation
+        setInterval(simulateConsoleActivity, 5000);
+    </script>
+</body>
+</html>
