@@ -3,100 +3,514 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <!-- jqyery -->
-    <!-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> -->
-    <title>Demo of Log to HTML Library</title>
+    <title>LogToHTML Demo - Interactive Testing</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
+      @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap');
+      
       body {
-        font-family: Arial, sans-serif;
-        margin: 20px;
-        padding: 20px;
-        background-color: #121212;
-        color: white;
+        font-family: 'JetBrains Mono', monospace;
+        background: #1e1e1e;
+        color: #cccccc;
       }
-      button {
-        padding: 10px 20px;
-        font-size: 16px;
-        cursor: pointer;
-        margin: 10px;
-        border: none;
-        border-radius: 5px;
-        background-color: #007bff;
-        color: white;
+      
+      .devtools-border {
+        border: 1px solid #3c3c3c;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
       }
-      button:hover {
-        background-color: #0056b3;
+      
+      .tab-active {
+        background: #2d2d30;
+        border-bottom: 2px solid #007acc;
       }
-
-      .links {
-        margin-top: 20px;
+      
+      .tab-inactive {
+        background: #252526;
+        border-bottom: 1px solid #3c3c3c;
       }
-      .links a {
-        display: block;
-        color: #00d4ff;
-        text-decoration: none;
-        font-size: 18px;
-        margin: 5px 0;
+      
+      .console-section {
+        background: #1e1e1e;
+        border: 1px solid #3c3c3c;
+        border-radius: 8px;
       }
-      .links a:hover {
-        text-decoration: underline;
+      
+      .btn-primary {
+        background: linear-gradient(135deg, #007acc, #005a9e);
+        transition: all 0.3s ease;
       }
-
-      code {
-        background-color: #434242;
-        cursor: pointer;
+      
+      .btn-primary:hover {
+        background: linear-gradient(135deg, #005a9e, #004080);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(0, 122, 204, 0.3);
       }
-      code:hover {
-        background-color: #00d4ff;
+      
+      .btn-secondary {
+        background: linear-gradient(135deg, #28a745, #20923a);
       }
-
-      .container {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        align-items: center;
-        gap: 20px;
+      
+      .btn-secondary:hover {
+        background: linear-gradient(135deg, #20923a, #1e7e34);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
       }
-
-      img {
-        max-width: 100%;
+      
+      .code-block {
+        background: #262626;
+        border: 1px solid #404040;
+        border-radius: 6px;
+        font-family: 'JetBrains Mono', monospace;
+        transition: all 0.3s ease;
+      }
+      
+      .code-block:hover {
+        border-color: #007acc;
+        box-shadow: 0 0 8px rgba(0, 122, 204, 0.2);
+      }
+      
+      .status-indicator {
+        display: inline-block;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        margin-right: 8px;
+      }
+      
+      .status-active {
+        background: #28a745;
+        animation: pulse 2s infinite;
+      }
+      
+      .status-inactive {
+        background: #dc3545;
+      }
+      
+      @keyframes pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.5; }
+      }
+      
+      .feature-card {
+        background: #252526;
+        border: 1px solid #3c3c3c;
+        transition: all 0.3s ease;
+      }
+      
+      .feature-card:hover {
+        border-color: #007acc;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+      }
+      
+      .glow-on-hover {
+        transition: all 0.3s ease;
+      }
+      
+      .glow-on-hover:hover {
+        box-shadow: 0 0 20px rgba(0, 122, 204, 0.4);
+      }
+      
+      .demo-image {
+        border-radius: 12px;
+        border: 2px solid #3c3c3c;
+        transition: all 0.3s ease;
+      }
+      
+      .demo-image:hover {
+        border-color: #007acc;
+        transform: scale(1.02);
+      }
+      
+      .log-preview {
+        font-size: 12px;
+        line-height: 1.4;
+        max-height: 200px;
+        overflow-y: auto;
+      }
+      
+      .log-preview::-webkit-scrollbar {
+        width: 6px;
+      }
+      
+      .log-preview::-webkit-scrollbar-track {
+        background: #1e1e1e;
+      }
+      
+      .log-preview::-webkit-scrollbar-thumb {
+        background: #404040;
+        border-radius: 3px;
+      }
+      
+      .log-preview::-webkit-scrollbar-thumb:hover {
+        background: #555555;
       }
     </style>
   </head>
-  <body>
-    <div class="container">
-      <div>
-        <h1>Demo of Log to HTML Library</h1>
-        <p>Click the button below to test various console log messages.</p>
-        <p>
-          Ensure <code onclick="addParam()">?logtohtml=true</code> in the URL to
-          test the log window
-        </p>
-        <button onclick="testConsoleLogs()">Generate Logs</button>
-        <button onclick="testRealFetch()">test Network Logs</button>
-
-        <div class="links">
-          <p>More details:</p>
-          <a href="https://github.com/singhkunal2050/logtohtml" target="_blank"
-            >GitHub Repository</a
-          >
-          <a href="https://www.npmjs.com/package/logtohtml" target="_blank"
-            >NPM Package</a
-          >
+  <body class="bg-gray-900 text-gray-300">
+    
+    <!-- Header - DevTools Style -->
+    <header class="bg-gray-800 border-b border-gray-700 px-4 py-2">
+      <div class="max-w-6xl mx-auto flex items-center justify-between">
+        <div class="flex items-center space-x-4">
+          <div class="flex items-center space-x-2">
+            <div class="w-3 h-3 bg-red-500 rounded-full"></div>
+            <div class="w-3 h-3 bg-yellow-500 rounded-full"></div>
+            <div class="w-3 h-3 bg-green-500 rounded-full"></div>
+          </div>
+          <h1 class="text-xl font-bold text-blue-400">LogToHTML Demo</h1>
+        </div>
+        <div class="flex items-center space-x-2">
+          <span class="status-indicator" id="statusIndicator"></span>
+          <span class="text-sm" id="statusText">Ready</span>
         </div>
       </div>
+    </header>
 
-      <img src="//picsum.photos/600/300" alt="Picsum Image" />
+    <!-- DevTools Tabs -->
+    <div class="bg-gray-800 border-b border-gray-700 px-4">
+      <div class="max-w-6xl mx-auto">
+        <div class="flex">
+          <div class="tab-active px-4 py-2 text-sm cursor-pointer">Demo</div>
+          <div class="tab-inactive px-4 py-2 text-sm cursor-pointer text-gray-400">Console</div>
+          <div class="tab-inactive px-4 py-2 text-sm cursor-pointer text-gray-400">Network</div>
+          <div class="tab-inactive px-4 py-2 text-sm cursor-pointer text-gray-400">Sources</div>
+        </div>
+      </div>
     </div>
+
+    <main class="max-w-6xl mx-auto px-4 py-8">
+      
+      <!-- Status Section -->
+      <section class="mb-8">
+        <div class="bg-gray-800 p-6 rounded-lg devtools-border">
+          <div class="flex items-center justify-between mb-4">
+            <h2 class="text-2xl font-bold text-blue-400">Interactive Demo</h2>
+            <div class="flex items-center space-x-4">
+              <div class="text-sm">
+                <span class="text-gray-400">Status:</span>
+                <span id="logStatus" class="text-yellow-400">Checking...</span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="grid md:grid-cols-2 gap-6">
+            <div>
+              <p class="text-gray-300 mb-4">
+                Test the LogToHTML library with various console operations and network requests.
+              </p>
+              
+              <div class="bg-gray-900 p-4 rounded-lg mb-4">
+                <div class="flex items-center justify-between mb-2">
+                  <span class="text-sm font-semibold text-blue-400">Activation Status</span>
+                  <button onclick="addParam()" class="text-xs bg-blue-600 hover:bg-blue-700 px-3 py-1 rounded transition-colors">
+                    Enable
+                  </button>
+                </div>
+                <div class="code-block p-3 cursor-pointer" onclick="addParam()">
+                  <code class="text-green-400">?logtohtml=true</code>
+                  <span class="text-gray-400 ml-2">← Click to add to URL</span>
+                </div>
+              </div>
+            </div>
+            
+            <div class="bg-gray-900 p-4 rounded-lg">
+              <h3 class="text-sm font-semibold text-yellow-400 mb-2">Quick Actions</h3>
+              <div class="space-y-2">
+                <button onclick="testConsoleLogs()" class="w-full btn-primary text-white px-4 py-3 rounded-lg font-semibold">
+                  🚀 Generate Console Logs
+                </button>
+                <button onclick="testRealFetch()" class="w-full btn-secondary text-white px-4 py-3 rounded-lg font-semibold">
+                  🌐 Test Network Requests
+                </button>
+                <button onclick="runFullDemo()" class="w-full bg-purple-600 hover:bg-purple-700 text-white px-4 py-3 rounded-lg font-semibold transition-colors">
+                  ✨ Run Full Demo
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Demo Content Grid -->
+      <div class="grid lg:grid-cols-2 gap-8">
+        
+        <!-- Left Column - Controls & Info -->
+        <div class="space-y-6">
+          
+          <!-- Console Features -->
+          <div class="feature-card p-6 rounded-lg">
+            <h3 class="text-xl font-semibold mb-4 text-blue-400">🔧 Console Features</h3>
+            <div class="space-y-3">
+              <div class="flex items-center justify-between p-3 bg-gray-900 rounded">
+                <span class="text-sm">Standard Logs</span>
+                <button onclick="testBasicLogs()" class="text-xs bg-gray-700 hover:bg-gray-600 px-3 py-1 rounded transition-colors">
+                  Test
+                </button>
+              </div>
+              <div class="flex items-center justify-between p-3 bg-gray-900 rounded">
+                <span class="text-sm">Styled Messages</span>
+                <button onclick="testStyledLogs()" class="text-xs bg-gray-700 hover:bg-gray-600 px-3 py-1 rounded transition-colors">
+                  Test
+                </button>
+              </div>
+              <div class="flex items-center justify-between p-3 bg-gray-900 rounded">
+                <span class="text-sm">Object Inspection</span>
+                <button onclick="testObjectLogs()" class="text-xs bg-gray-700 hover:bg-gray-600 px-3 py-1 rounded transition-colors">
+                  Test
+                </button>
+              </div>
+              <div class="flex items-center justify-between p-3 bg-gray-900 rounded">
+                <span class="text-sm">Error Handling</span>
+                <button onclick="testErrorLogs()" class="text-xs bg-gray-700 hover:bg-gray-600 px-3 py-1 rounded transition-colors">
+                  Test
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Network Features -->
+          <div class="feature-card p-6 rounded-lg">
+            <h3 class="text-xl font-semibold mb-4 text-green-400">🌐 Network Testing</h3>
+            <div class="space-y-3">
+              <div class="flex items-center justify-between p-3 bg-gray-900 rounded">
+                <span class="text-sm">Success Responses</span>
+                <button onclick="testSuccessRequests()" class="text-xs bg-gray-700 hover:bg-gray-600 px-3 py-1 rounded transition-colors">
+                  Test
+                </button>
+              </div>
+              <div class="flex items-center justify-between p-3 bg-gray-900 rounded">
+                <span class="text-sm">Error Responses</span>
+                <button onclick="testErrorRequests()" class="text-xs bg-gray-700 hover:bg-gray-600 px-3 py-1 rounded transition-colors">
+                  Test
+                </button>
+              </div>
+              <div class="flex items-center justify-between p-3 bg-gray-900 rounded">
+                <span class="text-sm">All Status Codes</span>
+                <button onclick="testRealFetch()" class="text-xs bg-gray-700 hover:bg-gray-600 px-3 py-1 rounded transition-colors">
+                  Test
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Live Log Preview -->
+          <div class="feature-card p-6 rounded-lg">
+            <h3 class="text-xl font-semibold mb-4 text-yellow-400">📝 Live Log Preview</h3>
+            <div class="bg-gray-900 p-4 rounded-lg log-preview" id="logPreview">
+              <div class="text-gray-500 text-center">
+                Logs will appear here when you run tests...
+              </div>
+            </div>
+            <button onclick="clearLogPreview()" class="mt-3 text-xs bg-red-600 hover:bg-red-700 px-3 py-1 rounded transition-colors">
+              Clear Logs
+            </button>
+          </div>
+        </div>
+
+        <!-- Right Column - Visual Demo -->
+        <div class="space-y-6">
+          
+          <!-- Demo Image -->
+          <div class="text-center">
+            <h3 class="text-xl font-semibold mb-4 text-purple-400">📱 Visual Example</h3>
+            <img src="https://picsum.photos/600/400?random=1" alt="Demo Screenshot" class="demo-image w-full glow-on-hover" />
+            <p class="text-sm text-gray-400 mt-2">
+              Example of LogToHTML running on a mobile device
+            </p>
+          </div>
+
+          <!-- Installation Guide -->
+          <div class="feature-card p-6 rounded-lg">
+            <h3 class="text-xl font-semibold mb-4 text-blue-400">⚡ Quick Start</h3>
+            
+            <div class="space-y-4">
+              <div>
+                <h4 class="text-sm font-semibold text-gray-300 mb-2">NPM Installation</h4>
+                <div class="code-block p-3">
+                  <code class="text-green-400">npm install logtohtml</code>
+                </div>
+              </div>
+              
+              <div>
+                <h4 class="text-sm font-semibold text-gray-300 mb-2">CDN Usage</h4>
+                <div class="code-block p-3 text-xs">
+                  <code class="text-blue-400">
+                    &lt;script src="https://unpkg.com/logtohtml@latest/dist/bundle.js"&gt;&lt;/script&gt;
+                  </code>
+                </div>
+              </div>
+              
+              <div>
+                <h4 class="text-sm font-semibold text-gray-300 mb-2">Activation</h4>
+                <div class="code-block p-3">
+                  <code class="text-yellow-400">yoursite.com?logtohtml=true</code>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Links Section -->
+          <div class="feature-card p-6 rounded-lg">
+            <h3 class="text-xl font-semibold mb-4 text-green-400">🔗 Resources</h3>
+            <div class="space-y-3">
+              <a href="https://github.com/singhkunal2050/logtohtml" target="_blank" 
+                 class="flex items-center space-x-3 p-3 bg-gray-900 rounded hover:bg-gray-800 transition-colors">
+                <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
+                </svg>
+                <span>GitHub Repository</span>
+              </a>
+              
+              <a href="https://www.npmjs.com/package/logtohtml" target="_blank"
+                 class="flex items-center space-x-3 p-3 bg-gray-900 rounded hover:bg-gray-800 transition-colors">
+                <svg class="w-5 h-5 text-red-500" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M1.763 0C.786 0 0 .786 0 1.763v20.474C0 23.214.786 24 1.763 24h20.474c.977 0 1.763-.786 1.763-1.763V1.763C24 .786 23.214 0 22.237 0H1.763zM5.13 5.323l13.837.019-.009 13.836h-3.464l.01-10.382h-3.456L12.04 19.17H8.595l-.01-10.377H5.113l.017-3.47z"/>
+                </svg>
+                <span>NPM Package</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
 
     <!-- Load your logging library -->
     <script src="https://unpkg.com/logtohtml@latest/dist/bundle.js"></script>
-    <!-- <script type="module" src="../index.js"></script> -->
-    <!-- <script src="../dist/bundle.js"></script> -->
-    <!-- <script src="https://cdn.jsdelivr.net/npm/logtohtml@0.0.5/dist/bundle.js"></script> -->
 
     <script defer>
+      // Status management
+      function updateStatus(message, isActive = false) {
+        const statusIndicator = document.getElementById('statusIndicator');
+        const statusText = document.getElementById('statusText');
+        const logStatus = document.getElementById('logStatus');
+        
+        statusIndicator.className = `status-indicator ${isActive ? 'status-active' : 'status-inactive'}`;
+        statusText.textContent = message;
+        if (logStatus) logStatus.textContent = message;
+      }
+
+      // Log preview functionality
+      function addToLogPreview(message, type = 'log') {
+        const preview = document.getElementById('logPreview');
+        const colors = {
+          log: 'text-gray-300',
+          info: 'text-blue-400',
+          warn: 'text-yellow-400',
+          error: 'text-red-400',
+          success: 'text-green-400'
+        };
+        
+        const logEntry = document.createElement('div');
+        logEntry.className = `mb-1 ${colors[type] || colors.log}`;
+        logEntry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+        
+        preview.appendChild(logEntry);
+        preview.scrollTop = preview.scrollHeight;
+        
+        // Remove the placeholder text
+        const placeholder = preview.querySelector('.text-gray-500');
+        if (placeholder) placeholder.remove();
+      }
+
+      function clearLogPreview() {
+        const preview = document.getElementById('logPreview');
+        preview.innerHTML = '<div class="text-gray-500 text-center">Logs cleared...</div>';
+      }
+
+      // Test functions
+      function testBasicLogs() {
+        updateStatus('Running basic logs...', true);
+        addToLogPreview('Testing basic console logs', 'info');
+        
+        console.log("Basic log message");
+        console.info("Info message");
+        console.warn("Warning message");
+        console.error("Error message");
+        
+        setTimeout(() => updateStatus('Basic logs completed'), 1000);
+      }
+
+      function testStyledLogs() {
+        updateStatus('Testing styled logs...', true);
+        addToLogPreview('Testing styled console messages', 'info');
+        
+        console.log("%cStyled Log Message", "color: cyan; font-weight: bold; background: black; padding: 5px;");
+        console.log("%cSuccess!", "color: green; font-size: 16px;");
+        console.log("%cWarning!", "color: orange; font-weight: bold;");
+        
+        setTimeout(() => updateStatus('Styled logs completed'), 1000);
+      }
+
+      function testObjectLogs() {
+        updateStatus('Testing object inspection...', true);
+        addToLogPreview('Testing object and array logging', 'info');
+        
+        console.log("Complex object:", {
+          user: { name: "John", age: 30 },
+          items: [1, 2, 3],
+          active: true
+        });
+        
+        console.table([
+          { name: "Alice", age: 25, role: "Developer" },
+          { name: "Bob", age: 30, role: "Designer" }
+        ]);
+        
+        setTimeout(() => updateStatus('Object inspection completed'), 1000);
+      }
+
+      function testErrorLogs() {
+        updateStatus('Testing error handling...', true);
+        addToLogPreview('Testing error and exception logging', 'warn');
+        
+        try {
+          throw new Error("Test Exception for Demo");
+        } catch (e) {
+          console.error("Caught Exception:", e);
+        }
+        
+        console.assert(false, "This is an assertion failure for testing");
+        
+        setTimeout(() => updateStatus('Error testing completed'), 1000);
+      }
+
+      function testSuccessRequests() {
+        updateStatus('Testing successful requests...', true);
+        addToLogPreview('Making successful API calls', 'info');
+        
+        fetch('https://jsonplaceholder.typicode.com/posts/1')
+          .then(response => {
+            console.log('✅ Successful request:', response.status, response.statusText);
+            addToLogPreview('✅ 200 OK response received', 'success');
+            return response.json();
+          })
+          .then(data => {
+            console.log('Response data:', data);
+            updateStatus('Success requests completed');
+          });
+      }
+
+      function testErrorRequests() {
+        updateStatus('Testing error requests...', true);
+        addToLogPreview('Testing error response handling', 'warn');
+        
+        fetch('https://jsonplaceholder.typicode.com/invalid-endpoint')
+          .then(response => {
+            console.log('❌ Error response:', response.status, response.statusText);
+            addToLogPreview(`❌ ${response.status} ${response.statusText}`, 'error');
+            updateStatus('Error requests completed');
+          })
+          .catch(error => {
+            console.error('Network error:', error);
+            addToLogPreview('Network error occurred', 'error');
+          });
+      }
+
       function testConsoleLogs() {
+        updateStatus('Running comprehensive console test...', true);
+        addToLogPreview('Starting comprehensive console log test', 'info');
+
         console.log("This is a simple log message.");
         console.info("This is an info message.");
         console.warn("This is a warning message.");
@@ -126,6 +540,8 @@
         console.time("Timer Test");
         setTimeout(() => {
           console.timeEnd("Timer Test");
+          updateStatus('Console test completed');
+          addToLogPreview('Console test completed successfully', 'success');
         }, 500);
 
         try {
@@ -140,36 +556,33 @@
         console.count("Counter Test");
       }
 
-      function addParam() {
-        const url = new URL(window.location.href);
-        url.searchParams.set("logtohtml", "true");
-        window.location.href = url.toString();
-      }
-
       async function testRealFetch() {
+        updateStatus('Running network test suite...', true);
+        addToLogPreview('Starting comprehensive network test', 'info');
+
         const urls = [
           {
             url: "https://jsonplaceholder.typicode.com/posts/1",
             label: "✅ 200 OK",
-          }, // Successful GET
+          },
           {
             url: "https://jsonplaceholder.typicode.com/invalid-url",
             label: "❌ 404 Not Found",
-          }, // Not Found
+          },
           {
             url: "https://httpstat.us/500",
             label: "🔥 500 Internal Server Error",
-          }, // Server Error
-          { url: "https://httpstat.us/302", label: "🔄 302 Redirect" }, // Redirect
-          { url: "https://httpstat.us/401", label: "🚫 401 Unauthorized" }, // Unauthorized
-          { url: "https://httpstat.us/403", label: "🚷 403 Forbidden" }, // Forbidden
-          { url: "https://httpstat.us/418", label: "☕ 418 I'm a teapot" }, // Easter Egg
-          { url: "https://httpstat.us/429", label: "⏳ 429 Too Many Requests" }, // Rate Limit
-          { url: "https://httpstat.us/301", label: "➡️ 301 Moved Permanently" }, // Permanent Redirect
+          },
+          { url: "https://httpstat.us/302", label: "🔄 302 Redirect" },
+          { url: "https://httpstat.us/401", label: "🚫 401 Unauthorized" },
+          { url: "https://httpstat.us/403", label: "🚷 403 Forbidden" },
+          { url: "https://httpstat.us/418", label: "☕ 418 I'm a teapot" },
+          { url: "https://httpstat.us/429", label: "⏳ 429 Too Many Requests" },
+          { url: "https://httpstat.us/301", label: "➡️ 301 Moved Permanently" },
           {
             url: "https://jsonplaceholder.typicode.com/comments",
             label: "📝 JSON Response",
-          }, // JSON Data
+          },
         ];
 
         for (let { url, label } of urls) {
@@ -194,21 +607,68 @@
             console.log(`URL: ${url}`);
             console.log(`Status: ${response.status} ${response.statusText}`);
             console.log(`Headers:`, headers);
-            console.log(`Response Body:`, body.substring(0, 300)); // Trim long responses
+            console.log(`Response Body:`, body.substring(0, 300));
             console.log(`Duration: ${duration} ms`);
+            
+            addToLogPreview(`${label} - ${response.status} (${duration}ms)`, 
+              response.ok ? 'success' : 'error');
           } catch (error) {
             console.error(`\n${label} - Error fetching ${url}:`, error.message);
+            addToLogPreview(`${label} - Error: ${error.message}`, 'error');
           }
+        }
+        
+        updateStatus('Network test completed');
+        addToLogPreview('Network test suite completed', 'success');
+      }
+
+      function runFullDemo() {
+        updateStatus('Running full demo suite...', true);
+        addToLogPreview('Starting complete demo sequence', 'info');
+        
+        setTimeout(() => {
+          testConsoleLogs();
+          setTimeout(() => {
+            testRealFetch();
+          }, 2000);
+        }, 500);
+      }
+
+      function addParam() {
+        const url = new URL(window.location.href);
+        url.searchParams.set("logtohtml", "true");
+        window.location.href = url.toString();
+      }
+
+      // Check if logtohtml is active
+      function checkLogToHtmlStatus() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const isActive = urlParams.get('logtohtml') === 'true';
+        
+        if (isActive) {
+          updateStatus('LogToHTML Active', true);
+          addToLogPreview('LogToHTML library is active and ready', 'success');
+        } else {
+          updateStatus('LogToHTML Inactive', false);
+          addToLogPreview('Add ?logtohtml=true to URL to activate', 'warn');
         }
       }
 
-      // Run on page load
-      // window.addEventListener("load", () => {
-      //   setTimeout(() => {
-          // testRealFetch();
-          // testConsoleLogs();
-      //   }, 1000);
-      // });
+      // Initialize
+      window.addEventListener('load', () => {
+        checkLogToHtmlStatus();
+        addToLogPreview('Demo page loaded successfully', 'info');
+      });
+
+      // Tab functionality
+      document.querySelectorAll('.tab-inactive').forEach(tab => {
+        tab.addEventListener('click', function() {
+          document.querySelectorAll('.tab-active, .tab-inactive').forEach(t => {
+            t.className = 'tab-inactive px-4 py-2 text-sm cursor-pointer text-gray-400';
+          });
+          this.className = 'tab-active px-4 py-2 text-sm cursor-pointer';
+        });
+      });
     </script>
   </body>
 </html>
