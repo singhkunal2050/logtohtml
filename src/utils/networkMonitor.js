@@ -8,6 +8,9 @@ export class NetworkMonitor {
     this.originalXHR = window.XMLHttpRequest;
     this.performanceObserver = null;
     
+    // Capture existing performance entries before initialization
+    this.captureExistingEntries();
+    
     this.init();
   }
 
@@ -15,6 +18,30 @@ export class NetworkMonitor {
     this.overrideFetch();
     this.overrideXHR();
     this.setupPerformanceObserver();
+  }
+
+  captureExistingEntries() {
+    // Get all existing performance entries
+    if (performance.getEntriesByType) {
+      const resourceEntries = performance.getEntriesByType('resource');
+      
+      resourceEntries.forEach(entry => {
+        const resource = {
+          id: `existing_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+          name: entry.name,
+          type: entry.initiatorType,
+          duration: Math.round(entry.duration),
+          size: entry.transferSize || 0,
+          startTime: Math.round(entry.startTime),
+          endTime: Math.round(entry.startTime + entry.duration),
+          timestamp: Date.now(),
+          success: entry.transferSize > 0,
+          isExisting: true
+        };
+        
+        this.resources.push(resource);
+      });
+    }
   }
 
   overrideFetch() {

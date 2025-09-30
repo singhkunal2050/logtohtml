@@ -218,44 +218,106 @@ export default function NetworkTab({ filter, search }) {
     );
   };
 
-  const renderRequestRow = (request) => {
-    const isExpanded = expandedRequests.has(request.id);
-    const statusColor = getStatusColor(request.status);
-    const typeIcon = getTypeIcon(request.type);
+  const renderRequestRow = (item) => {
+    const isExpanded = expandedRequests.has(item.id);
+    const statusColor = getStatusColor(item.status);
+    const typeIcon = getTypeIcon(item.type);
+
+    // Handle both requests and resources
+    const displayUrl = item.url || item.name;
+    const displayMethod = item.method || (item.itemType === 'resource' ? 'GET' : '');
+    const displayStatus = item.status || (item.success ? 200 : 0);
+    const displayStatusText = item.statusText || (item.success ? 'OK' : 'Failed');
+    const displayDuration = item.duration || 0;
+    const displaySize = item.responseSize || item.size || 0;
 
     return (
       <div 
-        key={request.id} 
+        key={item.id} 
         class={`network-request-row ${isExpanded ? 'expanded' : ''}`}
-        onClick={() => setSelectedRequest(request)}
+        onClick={() => setSelectedRequest(item)}
       >
         <div class="network-request-main">
           <div class="network-request-info">
             <span class="request-type-icon">{typeIcon}</span>
-            <span class="request-method">{request.method}</span>
-            <span class="request-url">{request.url}</span>
+            <span class="request-method">{displayMethod}</span>
+            <span class="request-url">{displayUrl}</span>
             <span class="request-status" style={{ color: statusColor }}>
-              {request.status} {request.statusText}
+              {displayStatus} {displayStatusText}
             </span>
           </div>
           <div class="network-request-meta">
-            <span class="request-duration">{formatDuration(request.duration)}</span>
-            <span class="request-size">{formatSize(request.responseSize || 0)}</span>
+            <span class="request-duration">{formatDuration(displayDuration)}</span>
+            <span class="request-size">{formatSize(displaySize)}</span>
             <button 
               class="expand-button"
               onClick={(e) => {
                 e.stopPropagation();
-                toggleRequestExpansion(request.id);
+                toggleRequestExpansion(item.id);
               }}
             >
               {isExpanded ? '▼' : '▶'}
             </button>
           </div>
         </div>
-        {renderRequestDetails(request)}
+        {renderRequestDetails(item)}
       </div>
     );
   };
+
+  // Combine requests and resources for display
+  const allNetworkItems = useMemo(() => {
+    const combined = [
+      ...requests.map(req => ({ ...req, itemType: 'request' })),
+      ...resources.map(res => ({ ...res, itemType: 'resource' }))
+    ];
+    
+    // Sort combined items
+    return combined.sort((a, b) => {
+      let aValue = a[sortBy] || a.startTime || 0;
+      let bValue = b[sortBy] || b.startTime || 0;
+      
+      if (sortBy === 'startTime') {
+        aValue = a.startTimestamp || a.startTime || 0;
+        bValue = b.startTimestamp || b.startTime || 0;
+      }
+      
+      if (typeof aValue === 'string') {
+        aValue = aValue.toLowerCase();
+        bValue = bValue.toLowerCase();
+      }
+      
+      if (sortOrder === 'asc') {
+        return aValue > bValue ? 1 : -1;
+      } else {
+        return aValue < bValue ? 1 : -1;
+      }
+    });
+  }, [requests, resources, sortBy, sortOrder]);
+
+  // Apply filters to combined items
+  const filteredItems = useMemo(() => {
+    if (allNetworkItems.length === 0) return [];
+    
+    let filtered = allNetworkItems;
+    
+    // Apply type filter
+    if (filter !== 'all') {
+      filtered = filtered.filter(item => item.type === filter);
+    }
+    
+    // Apply search
+    if (search && search.trim() !== '') {
+      filtered = filtered.filter(item => 
+        item.url?.toLowerCase().includes(search.toLowerCase()) ||
+        item.name?.toLowerCase().includes(search.toLowerCase()) ||
+        item.method?.toLowerCase().includes(search.toLowerCase()) ||
+        (item.statusText && item.statusText.toLowerCase().includes(search.toLowerCase()))
+      );
+    }
+    
+    return filtered;
+  }, [allNetworkItems, filter, search]);
 
   return (
     <div id="network-tab" class="network-tab">
@@ -304,13 +366,13 @@ export default function NetworkTab({ filter, search }) {
       </div>
 
       <div class="network-requests">
-        {filteredRequests.length === 0 ? (
+        {filteredItems.length === 0 ? (
           <div class="network-empty">
             No network requests recorded. Make some requests to see them here.
           </div>
         ) : (
           <div class="network-requests-list">
-            {filteredRequests.map(request => renderRequestRow(request))}
+            {filteredItems.map(item => renderRequestRow(item))}
           </div>
         )}
       </div>
