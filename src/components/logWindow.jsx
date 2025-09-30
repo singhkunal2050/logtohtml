@@ -6,6 +6,7 @@ import Content from "./content.jsx";
 import { utils } from "../utils/utils.js";
 import { performanceUtils } from "../utils/performance.js";
 import { consoleOverride } from "../utils/consoleOverride.js";
+import { networkMonitor } from "../utils/networkMonitor.js";
 import { devtoolsStore } from "../store/devtoolsStore.js";
 import packageJson from "../../package.json";
 const LIBRARY_VERSION = packageJson.version ?? "debug";
@@ -30,7 +31,9 @@ export default function LogWindow() {
       consoleOverride.clearLogs();
       setLogs([]);
     } else if(activeTab === tabs.network) {
+      networkMonitor.clearRequests();
       setNetworkRequests([]);
+      setResources([]);
     }
   };
 
@@ -39,42 +42,44 @@ export default function LogWindow() {
     consoleOverride.overrideAllMethods();
     
     // Initialize network monitoring
-    utils.overrideFetchXHR();
-    utils.overrideResourceMonitoring();
+    networkMonitor.init();
     
     // Initialize performance monitoring
     performanceUtils.init();
 
     setLogs(consoleOverride.getLogs());
-    setNetworkRequests([...window.__networkBuffer]);
+    setNetworkRequests(networkMonitor.getRequests());
+    setResources(networkMonitor.getResources());
 
     // Listen for new logs
     const handleNewLog = (event) => {
       setLogs(consoleOverride.getLogs());
     };
 
-    const handleNewNetworkLog = (event) => {
-      setNetworkRequests((prevNetworkRequests) => [
-        ...prevNetworkRequests,
-        event.detail,
-      ]);
+    const handleNewNetworkRequest = (event) => {
+      setNetworkRequests(networkMonitor.getRequests());
+    };
+
+    const handleNetworkRequestUpdated = (event) => {
+      setNetworkRequests(networkMonitor.getRequests());
     };
 
     const handleNewResource = (event) => {
-      setResources((prevResources) => [
-        ...prevResources,
-        event.detail,
-      ]);
+      setResources(networkMonitor.getResources());
     };
 
     window.addEventListener("new-log", handleNewLog);
-    window.addEventListener("new-network-log", handleNewNetworkLog);
+    window.addEventListener("new-network-request", handleNewNetworkRequest);
+    window.addEventListener("network-request-updated", handleNetworkRequestUpdated);
     window.addEventListener("new-resource", handleNewResource);
 
     return () => {
       window.removeEventListener("new-log", handleNewLog);
-      window.removeEventListener("new-network-log", handleNewNetworkLog);
+      window.removeEventListener("new-network-request", handleNewNetworkRequest);
+      window.removeEventListener("network-request-updated", handleNetworkRequestUpdated);
+      window.removeEventListener("new-resource", handleNewResource);
       performanceUtils.destroy();
+      networkMonitor.destroy();
     };
   }, []);
 

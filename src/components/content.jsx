@@ -4,6 +4,7 @@ import { logColors } from "../configs.js";
 import PerformanceTab from "./performance.jsx";
 import ElementsTab from "./elements.jsx";
 import ConsoleTab from "./console.jsx";
+import NetworkTab from "./network.jsx";
 
 export default function LogContent({
   activeTab,
@@ -34,52 +35,7 @@ export default function LogContent({
     <div id="log-content">
       {activeTab === "console" && <ConsoleTab filter={filter} search={search} />}
 
-      {activeTab === "network" && (
-        <div id="network-list">
-          {networkRequests.map((request, index) => (
-            <div key={index} class="network-message">
-              <div>
-                <strong>
-                  {request.method} {request.url}
-                </strong>
-                <span
-                  style={{
-                    color: request.status === 200 ? "green" : "red",
-                    marginLeft: "10px",
-                  }}
-                >
-                  {request.status} ({request.duration} ms)
-                </span>
-              </div>
-              <details>
-                <summary style={{ cursor: "pointer", color: "#007bff" }}>
-                  Request Details
-                </summary>
-                <pre
-                  style={{
-                    whiteSpace: "pre-wrap",
-                    color: "#ccc",
-                    padding: "5px",
-                  }}
-                >
-                  {JSON.stringify(request, null, 2)}
-                </pre>
-              </details>
-            </div>
-          ))}
-          {resources.map((resource, index) => (
-            <div key={index} class="resource-message">
-              <div>
-                Resource
-              </div>
-              <div style={{display:"flex", gap: "10px"}}>
-                <strong>{resource.name}</strong>
-                <span>{resource.type}</span>
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
+      {activeTab === "network" && <NetworkTab filter={filter} search={search} />}
 
       {activeTab === "performance" && <PerformanceTab />}
 

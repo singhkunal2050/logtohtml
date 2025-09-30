@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Network Test - LogToHTML DevTools</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'JetBrains Mono', monospace;
+            background: #1e1e1e;
+            color: #cccccc;
+        }
+        .test-section {
+            background: #2a2a2a;
+            border: 1px solid #3c3c3c;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .test-button {
+            background: #007acc;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 4px;
+            font-size: 12px;
+        }
+        .test-button:hover {
+            background: #005a9e;
+        }
+        .test-button.danger {
+            background: #dc3545;
+        }
+        .test-button.danger:hover {
+            background: #c82333;
+        }
+        .test-button.success {
+            background: #28a745;
+        }
+        .test-button.success:hover {
+            background: #20923a;
+        }
+        .test-button.warning {
+            background: #ffc107;
+            color: #000;
+        }
+        .test-button.warning:hover {
+            background: #e0a800;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mx-auto p-4">
+        <h1 class="text-3xl font-bold text-blue-400 mb-8">Network Test Suite</h1>
+        
+        <div class="test-section">
+            <h2 class="text-xl font-bold text-green-400 mb-4">Basic HTTP Requests</h2>
+            <p class="mb-4">Test basic HTTP methods:</p>
+            <button class="test-button" onclick="testBasicRequests()">Test Basic Requests</button>
+            <button class="test-button success" onclick="testGETRequests()">Test GET Requests</button>
+            <button class="test-button warning" onclick="testPOSTRequests()">Test POST Requests</button>
+            <button class="test-button danger" onclick="testErrorRequests()">Test Error Requests</button>
+        </div>
+
+        <div class="test-section">
+            <h2 class="text-xl font-bold text-yellow-400 mb-4">API Requests</h2>
+            <p class="mb-4">Test various API endpoints:</p>
+            <button class="test-button" onclick="testJSONPlaceholder()">JSONPlaceholder API</button>
+            <button class="test-button" onclick="testHTTPBin()">HTTPBin API</button>
+            <button class="test-button" onclick="testRandomUser()">Random User API</button>
+            <button class="test-button" onclick="testCatFacts()">Cat Facts API</button>
+        </div>
+
+        <div class="test-section">
+            <h2 class="text-xl font-bold text-purple-400 mb-4">Resource Loading</h2>
+            <p class="mb-4">Test different resource types:</p>
+            <button class="test-button" onclick="testImageLoading()">Load Images</button>
+            <button class="test-button" onclick="testScriptLoading()">Load Scripts</button>
+            <button class="test-button" onclick="testStylesheetLoading()">Load Stylesheets</button>
+            <button class="test-button" onclick="testFontLoading()">Load Fonts</button>
+        </div>
+
+        <div class="test-section">
+            <h2 class="text-xl font-bold text-orange-400 mb-4">Advanced Scenarios</h2>
+            <p class="mb-4">Test complex network scenarios:</p>
+            <button class="test-button" onclick="testConcurrentRequests()">Concurrent Requests</button>
+            <button class="test-button" onclick="testLargePayloads()">Large Payloads</button>
+            <button class="test-button" onclick="testTimeoutRequests()">Timeout Requests</button>
+            <button class="test-button" onclick="testCORSRequests()">CORS Requests</button>
+        </div>
+
+        <div class="test-section">
+            <h2 class="text-xl font-bold text-red-400 mb-4">Error Scenarios</h2>
+            <p class="mb-4">Test various error conditions:</p>
+            <button class="test-button danger" onclick="test404Errors()">404 Errors</button>
+            <button class="test-button danger" onclick="test500Errors()">500 Errors</button>
+            <button class="test-button danger" onclick="testNetworkErrors()">Network Errors</button>
+            <button class="test-button danger" onclick="testTimeoutErrors()">Timeout Errors</button>
+        </div>
+
+        <div class="test-section">
+            <h2 class="text-xl font-bold text-teal-400 mb-4">Performance Tests</h2>
+            <p class="mb-4">Test network performance monitoring:</p>
+            <button class="test-button" onclick="testSlowRequests()">Slow Requests</button>
+            <button class="test-button" onclick="testFastRequests()">Fast Requests</button>
+            <button class="test-button" onclick="testBurstRequests()">Burst Requests</button>
+            <button class="test-button" onclick="testLongRequests()">Long Requests</button>
+        </div>
+    </div>
+
+    <script>
+        // Basic HTTP Requests
+        function testBasicRequests() {
+            fetch('https://httpbin.org/get')
+                .then(response => response.json())
+                .then(data => console.log('GET request successful:', data));
+        }
+
+        function testGETRequests() {
+            // Test various GET requests
+            fetch('https://jsonplaceholder.typicode.com/posts/1')
+                .then(response => response.json())
+                .then(data => console.log('GET /posts/1:', data));
+
+            fetch('https://jsonplaceholder.typicode.com/users')
+                .then(response => response.json())
+                .then(data => console.log('GET /users:', data.length, 'users'));
+        }
+
+        function testPOSTRequests() {
+            // Test POST requests with different payloads
+            fetch('https://jsonplaceholder.typicode.com/posts', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    title: 'Test Post',
+                    body: 'This is a test post',
+                    userId: 1
+                })
+            })
+            .then(response => response.json())
+            .then(data => console.log('POST request successful:', data));
+
+            // Test form data
+            const formData = new FormData();
+            formData.append('name', 'John Doe');
+            formData.append('email', 'john@example.com');
+
+            fetch('https://httpbin.org/post', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => console.log('Form POST request successful:', data));
+        }
+
+        function testErrorRequests() {
+            // Test various error scenarios
+            fetch('https://httpbin.org/status/400')
+                .then(response => console.log('400 Error:', response.status));
+
+            fetch('https://httpbin.org/status/500')
+                .then(response => console.log('500 Error:', response.status));
+        }
+
+        // API Requests
+        function testJSONPlaceholder() {
+            Promise.all([
+                fetch('https://jsonplaceholder.typicode.com/posts/1'),
+                fetch('https://jsonplaceholder.typicode.com/comments/1'),
+                fetch('https://jsonplaceholder.typicode.com/albums/1'),
+                fetch('https://jsonplaceholder.typicode.com/photos/1')
+            ])
+            .then(responses => Promise.all(responses.map(r => r.json())))
+            .then(data => console.log('JSONPlaceholder data loaded:', data));
+        }
+
+        function testHTTPBin() {
+            fetch('https://httpbin.org/json')
+                .then(response => response.json())
+                .then(data => console.log('HTTPBin JSON:', data));
+
+            fetch('https://httpbin.org/xml')
+                .then(response => response.text())
+                .then(data => console.log('HTTPBin XML:', data.substring(0, 100)));
+        }
+
+        function testRandomUser() {
+            fetch('https://randomuser.me/api/')
+                .then(response => response.json())
+                .then(data => console.log('Random User:', data.results[0].name));
+        }
+
+        function testCatFacts() {
+            fetch('https://catfact.ninja/fact')
+                .then(response => response.json())
+                .then(data => console.log('Cat Fact:', data.fact));
+        }
+
+        // Resource Loading
+        function testImageLoading() {
+            const images = [
+                'https://picsum.photos/200/300?random=1',
+                'https://picsum.photos/200/300?random=2',
+                'https://picsum.photos/200/300?random=3'
+            ];
+
+            images.forEach((src, index) => {
+                const img = new Image();
+                img.onload = () => console.log(`Image ${index + 1} loaded:`, src);
+                img.onerror = () => console.error(`Image ${index + 1} failed to load:`, src);
+                img.src = src;
+            });
+        }
+
+        function testScriptLoading() {
+            const script = document.createElement('script');
+            script.src = 'https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js';
+            script.onload = () => console.log('Script loaded: Lodash');
+            script.onerror = () => console.error('Script failed to load: Lodash');
+            document.head.appendChild(script);
+        }
+
+        function testStylesheetLoading() {
+            const link = document.createElement('link');
+            link.rel = 'stylesheet';
+            link.href = 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css';
+            link.onload = () => console.log('Stylesheet loaded: Font Awesome');
+            link.onerror = () => console.error('Stylesheet failed to load: Font Awesome');
+            document.head.appendChild(link);
+        }
+
+        function testFontLoading() {
+            const link = document.createElement('link');
+            link.rel = 'stylesheet';
+            link.href = 'https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap';
+            link.onload = () => console.log('Font loaded: Roboto');
+            link.onerror = () => console.error('Font failed to load: Roboto');
+            document.head.appendChild(link);
+        }
+
+        // Advanced Scenarios
+        function testConcurrentRequests() {
+            console.log('Starting 10 concurrent requests...');
+            const promises = Array.from({ length: 10 }, (_, i) => 
+                fetch(`https://httpbin.org/delay/${Math.random() * 2}`)
+                    .then(response => response.json())
+                    .then(data => console.log(`Concurrent request ${i + 1} completed`))
+            );
+            
+            Promise.all(promises)
+                .then(() => console.log('All concurrent requests completed'));
+        }
+
+        function testLargePayloads() {
+            const largeData = {
+                data: Array.from({ length: 1000 }, (_, i) => ({
+                    id: i,
+                    name: `Item ${i}`,
+                    description: `This is item number ${i} with some description`,
+                    timestamp: Date.now()
+                }))
+            };
+
+            fetch('https://httpbin.org/post', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(largeData)
+            })
+            .then(response => response.json())
+            .then(data => console.log('Large payload sent:', data.json.data.length, 'items'));
+        }
+
+        function testTimeoutRequests() {
+            // Test requests that might timeout
+            fetch('https://httpbin.org/delay/5', {
+                signal: AbortSignal.timeout(3000)
+            })
+            .then(response => response.json())
+            .then(data => console.log('Timeout request completed:', data))
+            .catch(error => console.error('Timeout request failed:', error.message));
+        }
+
+        function testCORSRequests() {
+            // Test CORS requests
+            fetch('https://api.github.com/users/octocat')
+                .then(response => response.json())
+                .then(data => console.log('CORS request successful:', data.login))
+                .catch(error => console.error('CORS request failed:', error));
+        }
+
+        // Error Scenarios
+        function test404Errors() {
+            fetch('https://httpbin.org/status/404')
+                .then(response => console.log('404 Error received:', response.status))
+                .catch(error => console.error('404 Error failed:', error));
+        }
+
+        function test500Errors() {
+            fetch('https://httpbin.org/status/500')
+                .then(response => console.log('500 Error received:', response.status))
+                .catch(error => console.error('500 Error failed:', error));
+        }
+
+        function testNetworkErrors() {
+            // Test with invalid URL
+            fetch('https://invalid-domain-that-does-not-exist.com/api')
+                .then(response => console.log('Network request completed:', response.status))
+                .catch(error => console.error('Network error caught:', error.message));
+        }
+
+        function testTimeoutErrors() {
+            // Test with very long delay
+            fetch('https://httpbin.org/delay/10', {
+                signal: AbortSignal.timeout(2000)
+            })
+            .then(response => response.json())
+            .then(data => console.log('Timeout request completed:', data))
+            .catch(error => console.error('Timeout error caught:', error.message));
+        }
+
+        // Performance Tests
+        function testSlowRequests() {
+            console.log('Testing slow requests...');
+            fetch('https://httpbin.org/delay/3')
+                .then(response => response.json())
+                .then(data => console.log('Slow request completed:', data));
+        }
+
+        function testFastRequests() {
+            console.log('Testing fast requests...');
+            const promises = Array.from({ length: 20 }, () => 
+                fetch('https://httpbin.org/get')
+                    .then(response => response.json())
+            );
+            
+            Promise.all(promises)
+                .then(() => console.log('All fast requests completed'));
+        }
+
+        function testBurstRequests() {
+            console.log('Testing burst requests...');
+            const burstSize = 50;
+            const promises = Array.from({ length: burstSize }, (_, i) => 
+                fetch(`https://httpbin.org/get?request=${i}`)
+                    .then(response => response.json())
+                    .then(data => console.log(`Burst request ${i + 1} completed`))
+            );
+            
+            Promise.all(promises)
+                .then(() => console.log(`All ${burstSize} burst requests completed`));
+        }
+
+        function testLongRequests() {
+            console.log('Testing long requests...');
+            fetch('https://httpbin.org/stream/100')
+                .then(response => response.text())
+                .then(data => console.log('Long request completed:', data.length, 'characters'));
+        }
+
+        // Auto-run some tests on page load
+        window.addEventListener('load', () => {
+            console.log('🌐 Network Test Suite Loaded');
+            console.log('Click the buttons above to test different network scenarios');
+            console.log('Check the Network tab to see all requests in detail');
+        });
+    </script>
+    <script src="/dist/bundle.js"></script>
+</body>
+</html>
