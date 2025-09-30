@@ -19,6 +19,719 @@
   scrollbar-color: #6b6b6b #282828;
 }
 
+/* Performance Tab Styles */
+.performance-tab {
+  padding: 15px;
+  background-color: #1e1e1e;
+  color: #cccccc;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.performance-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #3c3c3c;
+  padding-bottom: 10px;
+}
+
+.performance-header h3 {
+  margin: 0;
+  color: #007acc;
+  font-size: 16px;
+}
+
+.clear-button {
+  background: #dc3545;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.clear-button:hover {
+  background: #c82333;
+}
+
+.performance-section {
+  margin-bottom: 25px;
+  background: #252526;
+  border-radius: 6px;
+  padding: 15px;
+  border: 1px solid #3c3c3c;
+}
+
+.performance-section h4 {
+  margin: 0 0 15px 0;
+  color: #007acc;
+  font-size: 14px;
+  border-bottom: 1px solid #3c3c3c;
+  padding-bottom: 8px;
+}
+
+/* Memory Usage Styles */
+.memory-info {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.memory-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4px 0;
+}
+
+.memory-item .label {
+  color: #9ca3af;
+  font-weight: 500;
+}
+
+.memory-item .value {
+  color: #ffffff;
+  font-weight: bold;
+}
+
+.memory-progress {
+  position: relative;
+  background: #3c3c3c;
+  height: 20px;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-top: 10px;
+}
+
+.memory-bar {
+  height: 100%;
+  background: #4CAF50;
+  transition: width 0.3s ease;
+  border-radius: 10px;
+}
+
+.percentage {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  font-weight: bold;
+  font-size: 12px;
+}
+
+/* FPS Display Styles */
+.fps-display {
+  text-align: center;
+  padding: 20px;
+  background: #1a1a1a;
+  border-radius: 8px;
+  border: 2px solid #3c3c3c;
+}
+
+.fps-value {
+  font-size: 24px;
+  font-weight: bold;
+  text-shadow: 0 0 10px currentColor;
+}
+
+/* Timing Info Styles */
+.timing-info {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.timing-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 0;
+  border-bottom: 1px solid #3c3c3c;
+}
+
+.timing-item:last-child {
+  border-bottom: none;
+}
+
+.timing-item.total {
+  background: #2d2d30;
+  padding: 8px;
+  border-radius: 4px;
+  font-weight: bold;
+  margin-top: 8px;
+}
+
+.timing-item .label {
+  color: #9ca3af;
+  font-weight: 500;
+}
+
+.timing-item .value {
+  color: #ffffff;
+  font-weight: bold;
+}
+
+/* Metrics List Styles */
+.metrics-list {
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.metric-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid #3c3c3c;
+  font-size: 11px;
+}
+
+.metric-item:last-child {
+  border-bottom: none;
+}
+
+.metric-type {
+  background: #007acc;
+  color: white;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-size: 10px;
+  font-weight: bold;
+}
+
+.metric-duration {
+  color: #ff9800;
+  font-weight: bold;
+}
+
+.metric-value {
+  color: #4caf50;
+  font-weight: bold;
+}
+
+.metric-time {
+  color: #9ca3af;
+  font-size: 10px;
+}
+
+.no-metrics {
+  text-align: center;
+  color: #6b6b6b;
+  font-style: italic;
+  padding: 20px;
+}
+
+/* Elements Tab Styles */
+.elements-tab {
+  padding: 15px;
+  background-color: #1e1e1e;
+  color: #cccccc;
+  font-family: 'JetBrains Mono', monospace;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.elements-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #3c3c3c;
+  padding-bottom: 10px;
+}
+
+.elements-header h3 {
+  margin: 0;
+  color: #007acc;
+  font-size: 16px;
+}
+
+.elements-controls {
+  display: flex;
+  gap: 10px;
+}
+
+.inspect-button {
+  background: #007acc;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  transition: background 0.3s ease;
+}
+
+.inspect-button:hover {
+  background: #005a9e;
+}
+
+.inspect-button.active {
+  background: #dc3545;
+}
+
+.inspect-button.active:hover {
+  background: #c82333;
+}
+
+.elements-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.elements-panels {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.panel-tabs {
+  display: flex;
+  border-bottom: 1px solid #3c3c3c;
+  margin-bottom: 15px;
+}
+
+.panel-tab {
+  background: none;
+  border: none;
+  color: #9ca3af;
+  padding: 8px 16px;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: all 0.3s ease;
+}
+
+.panel-tab:hover {
+  color: #ffffff;
+  background: #2a2a2a;
+}
+
+.panel-tab.active {
+  color: #007acc;
+  border-bottom-color: #007acc;
+  background: #2a2a2a;
+}
+
+.panel-content {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.dom-tree {
+  height: 100%;
+}
+
+.dom-tree h4 {
+  color: #007acc;
+  margin-bottom: 10px;
+  font-size: 14px;
+}
+
+.dom-tree-content {
+  max-height: 300px;
+  overflow-y: auto;
+  border: 1px solid #3c3c3c;
+  border-radius: 4px;
+  padding: 10px;
+  background: #1a1a1a;
+}
+
+.dom-node {
+  padding: 4px 8px;
+  cursor: pointer;
+  background-color: #2a2a2a;
+  border-left: 2px solid #007acc;
+  margin-bottom: 2px;
+  border-radius: 2px;
+  transition: background 0.2s ease;
+}
+
+.dom-node:hover {
+  background-color: #3a3a3a;
+}
+
+.styles-panel, .attributes-panel, .events-panel {
+  height: 100%;
+}
+
+.styles-panel h4, .attributes-panel h4, .events-panel h4 {
+  color: #007acc;
+  margin-bottom: 15px;
+  font-size: 14px;
+}
+
+.styles-content, .attributes-content, .events-content {
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.computed-styles, .inline-styles {
+  margin-bottom: 20px;
+}
+
+.computed-styles h5, .inline-styles h5 {
+  color: #4caf50;
+  margin-bottom: 10px;
+  font-size: 12px;
+}
+
+.style-item, .attribute-item, .event-item {
+  display: flex;
+  align-items: center;
+  padding: 6px 0;
+  border-bottom: 1px solid #3c3c3c;
+  gap: 10px;
+}
+
+.style-item:last-child, .attribute-item:last-child, .event-item:last-child {
+  border-bottom: none;
+}
+
+.property, .attribute-name, .event-type {
+  color: #007acc;
+  font-weight: bold;
+  min-width: 120px;
+  font-size: 11px;
+}
+
+.style-input, .attribute-input {
+  flex: 1;
+  background: #2a2a2a;
+  border: 1px solid #3c3c3c;
+  color: #ffffff;
+  padding: 4px 8px;
+  border-radius: 3px;
+  font-size: 11px;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.style-input:focus, .attribute-input:focus {
+  outline: none;
+  border-color: #007acc;
+}
+
+.remove-attribute {
+  background: #dc3545;
+  color: white;
+  border: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.remove-attribute:hover {
+  background: #c82333;
+}
+
+.event-type {
+  background: #007acc;
+  color: white;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-size: 10px;
+  font-weight: bold;
+}
+
+.event-handler {
+  color: #9ca3af;
+  font-size: 11px;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.element-info {
+  background: #252526;
+  border: 1px solid #3c3c3c;
+  border-radius: 6px;
+  padding: 15px;
+  margin-top: 15px;
+}
+
+.element-info h4 {
+  color: #007acc;
+  margin-bottom: 10px;
+  font-size: 14px;
+}
+
+.element-details {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.element-basic, .element-dimensions, .element-position {
+  font-size: 12px;
+  color: #cccccc;
+}
+
+.element-basic strong, .element-dimensions strong, .element-position strong {
+  color: #007acc;
+}
+
+.no-selection, .no-events {
+  text-align: center;
+  color: #6b6b6b;
+  font-style: italic;
+  padding: 20px;
+  background: #1a1a1a;
+  border-radius: 4px;
+  border: 1px solid #3c3c3c;
+}
+
+/* Console Tab Styles - Chrome DevTools Style */
+.console-tab {
+  padding: 0;
+  background-color: #1e1e1e;
+  color: #cccccc;
+  font-family: 'JetBrains Mono', monospace;
+  height: 100%;
+  overflow-y: auto;
+}
+
+.console-logs {
+  display: flex;
+  flex-direction: column;
+}
+
+.console-entry {
+  padding: 4px 8px;
+  border-bottom: 1px solid #2a2a2a;
+  background: transparent;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.console-entry[data-level="error"] {
+  background: #3c2828;
+  border-left: 2px solid #e91e63;
+}
+
+.console-entry[data-level="warn"] {
+  background: #3c3b28;
+  border-left: 2px solid #ffb74d;
+}
+
+.console-entry[data-level="info"] ,.console-entry[data-level="debug"] {
+  background: #28373c;
+  border-left: 2px solid #4fc3f7;
+}
+
+
+.console-entry[data-level="group"] {
+  background: #2a2a2a;
+  border-left: 2px solid #81c784;
+}
+
+
+.console-entry-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  flex: 1;
+}
+
+.console-icon {
+  font-size: 12px;
+  min-width: 16px;
+  margin-top: 1px;
+}
+
+.console-timestamp {
+  color: #6b6b6b;
+  font-size: 11px;
+  min-width: 60px;
+  margin-top: 1px;
+}
+
+.console-level {
+  color: #9ca3af;
+  font-size: 10px;
+  min-width: 40px;
+  text-transform: uppercase;
+  margin-top: 1px;
+}
+
+.console-message {
+  flex: 1;
+  font-size: 12px;
+  word-break: break-word;
+  color: #cccccc;
+}
+
+.console-args {
+  margin-top: 4px;
+  padding-left: 16px;
+  border-left: 1px solid #3c3c3c;
+}
+
+.console-arg {
+  margin-bottom: 2px;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 12px;
+}
+
+.expand-button {
+  background: none;
+  border: none;
+  color: #007acc;
+  cursor: pointer;
+  font-size: 10px;
+  padding: 0;
+  min-width: 12px;
+  height: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.object-preview {
+  color: #4fc3f7;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.object-details {
+  background: #1a1a1a;
+  border: 1px solid #3c3c3c;
+  border-radius: 2px;
+  padding: 4px 8px;
+  margin-top: 2px;
+  font-size: 11px;
+  color: #cccccc;
+  white-space: pre-wrap;
+  max-height: 150px;
+  overflow-y: auto;
+}
+
+/* Table Styles - Chrome DevTools Style */
+.console-table {
+  margin-top: 4px;
+  border: 1px solid #3c3c3c;
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.console-table table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 11px;
+}
+
+.console-table th {
+  background: #2a2a2a;
+  color: #ffffff;
+  padding: 4px 6px;
+  text-align: left;
+  font-weight: bold;
+  border-bottom: 1px solid #3c3c3c;
+}
+
+.console-table td {
+  padding: 3px 6px;
+  border-bottom: 1px solid #2a2a2a;
+  color: #cccccc;
+}
+
+.table-empty {
+  text-align: center;
+  color: #6b6b6b;
+  font-style: italic;
+  padding: 20px;
+}
+
+.table-more {
+  text-align: center;
+  color: #9ca3af;
+  padding: 8px;
+  background: #2a2a2a;
+  font-size: 11px;
+}
+
+/* Stack Trace Styles - Chrome DevTools Style */
+.stack-trace {
+  margin-top: 4px;
+  padding: 4px 8px;
+  background: #1a1a1a;
+  border: 1px solid #3c3c3c;
+  border-radius: 2px;
+}
+
+.stack-header {
+  color: #ff9800;
+  font-weight: bold;
+  margin-bottom: 2px;
+  font-size: 11px;
+}
+
+.stack-frame {
+  color: #cccccc;
+  font-size: 10px;
+  margin-left: 12px;
+  margin-bottom: 1px;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* Special Log Types - Chrome DevTools Style (no special backgrounds) */
+
+/* Assertion Failure - Chrome DevTools Style */
+.assert-failure {
+  color: #e91e63;
+  font-weight: bold;
+  margin-top: 2px;
+  padding: 2px 4px;
+  background: #2a1e1e;
+  border-radius: 2px;
+  border-left: 2px solid #e91e63;
+}
+
+/* Count Display - Chrome DevTools Style */
+.count-display {
+  color: #9c27b0;
+  font-weight: bold;
+  margin-top: 2px;
+}
+
+/* Timer Display - Chrome DevTools Style */
+.timer-display {
+  color: #4caf50;
+  font-weight: bold;
+  margin-top: 2px;
+}
+
+/* Empty State - Chrome DevTools Style (no empty state message) */
+
+/* Placeholder Styles for Future Tabs */
+.storage-placeholder,
+.application-placeholder,
+.security-placeholder {
+  text-align: center;
+  padding: 40px 20px;
+  color: #9ca3af;
+}
+
+.storage-placeholder h3,
+.application-placeholder h3,
+.security-placeholder h3 {
+  color: #007acc;
+  margin-bottom: 10px;
+}
+
 /* WebKit-specific scrollbar styling for Chrome, Safari, etc. */
 #dynamic-log-window::-webkit-scrollbar {
   width: 8px;

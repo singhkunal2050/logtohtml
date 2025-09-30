@@ -3,6 +3,10 @@ import { h, Fragment } from "preact";
 import { useState, useEffect } from "preact/hooks";
 import Header from "./header.jsx";
 import Content from "./content.jsx";
+import { utils } from "../utils/utils.js";
+import { performanceUtils } from "../utils/performance.js";
+import { consoleOverride } from "../utils/consoleOverride.js";
+import { devtoolsStore } from "../store/devtoolsStore.js";
 import packageJson from "../../package.json";
 const LIBRARY_VERSION = packageJson.version ?? "debug";
 
@@ -15,8 +19,15 @@ export default function LogWindow() {
   const [filter, setFilter] = useState("all");
   const [search, setSearch] = useState("");
 
+  // Subscribe to store changes
+  useEffect(() => {
+    const unsubscribeActiveTab = devtoolsStore.subscribe('activeTab', setActiveTab);
+    return () => unsubscribeActiveTab();
+  }, []);
+
   const clearLogs = () => {
     if (activeTab === tabs.console) {
+      consoleOverride.clearLogs();
       setLogs([]);
     } else if(activeTab === tabs.network) {
       setNetworkRequests([]);
@@ -24,12 +35,22 @@ export default function LogWindow() {
   };
 
   useEffect(() => {
-    setLogs([...window.__logBuffer]);
+    // Initialize comprehensive console override
+    consoleOverride.overrideAllMethods();
+    
+    // Initialize network monitoring
+    utils.overrideFetchXHR();
+    utils.overrideResourceMonitoring();
+    
+    // Initialize performance monitoring
+    performanceUtils.init();
+
+    setLogs(consoleOverride.getLogs());
     setNetworkRequests([...window.__networkBuffer]);
 
-    // Listen for new logs without overriding console again
+    // Listen for new logs
     const handleNewLog = (event) => {
-      setLogs((prevLogs) => [...prevLogs, event.detail]);
+      setLogs(consoleOverride.getLogs());
     };
 
     const handleNewNetworkLog = (event) => {
@@ -53,6 +74,7 @@ export default function LogWindow() {
     return () => {
       window.removeEventListener("new-log", handleNewLog);
       window.removeEventListener("new-network-log", handleNewNetworkLog);
+      performanceUtils.destroy();
     };
   }, []);
 

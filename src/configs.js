@@ -17,7 +17,12 @@ export const logColors = {
 export const tabs = {
   console: "console",
   network: "network",
+  performance: "performance",
+  elements: "elements",
+  storage: "storage",
+  application: "application",
+  security: "security",
 };
 
 // Filter options
-export const logFilters = ["all", "log", "debug", "error", "warn"];
+export const logFilters = ["all", "log", "info", "debug", "warn", "error", "table", "trace", "assert", "count", "time"];

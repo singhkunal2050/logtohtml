@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Console Test - LogToHTML DevTools</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'JetBrains Mono', monospace;
+            background: #1e1e1e;
+            color: #cccccc;
+        }
+        .test-section {
+            background: #2a2a2a;
+            border: 1px solid #3c3c3c;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .test-button {
+            background: #007acc;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 4px;
+            font-size: 12px;
+        }
+        .test-button:hover {
+            background: #005a9e;
+        }
+        .test-button.danger {
+            background: #dc3545;
+        }
+        .test-button.danger:hover {
+            background: #c82333;
+        }
+        .test-button.success {
+            background: #28a745;
+        }
+        .test-button.success:hover {
+            background: #20923a;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mx-auto p-4">
+        <h1 class="text-3xl font-bold text-blue-400 mb-8">Console Test Suite - LogToHTML DevTools</h1>
+        
+        <div class="test-section">
+            <h2 class="text-xl font-bold text-green-400 mb-4">Basic Logging</h2>
+            <p class="mb-4">Test all basic console methods:</p>
+            <button class="test-button" onclick="testBasicLogging()">Test Basic Logging</button>
+        </div>
+
+        <div class="test-section">
+            <h2 class="text-xl font-bold text-yellow-400 mb-4">Object Inspection</h2>
+            <p class="mb-4">Test object inspection and formatting:</p>
+            <button class="test-button" onclick="testObjectInspection()">Test Object Inspection</button>
+        </div>
+
+        <div class="test-section">
+            <h2 class="text-xl font-bold text-purple-400 mb-4">Console Groups</h2>
+            <p class="mb-4">Test console grouping functionality:</p>
+            <button class="test-button" onclick="testConsoleGroups()">Test Console Groups</button>
+        </div>
+
+        <div class="test-section">
+            <h2 class="text-xl font-bold text-blue-400 mb-4">Console Table</h2>
+            <p class="mb-4">Test console.table functionality:</p>
+            <button class="test-button" onclick="testConsoleTable()">Test Console Table</button>
+        </div>
+
+        <div class="test-section">
+            <h2 class="text-xl font-bold text-orange-400 mb-4">Console Trace</h2>
+            <p class="mb-4">Test console.trace functionality:</p>
+            <button class="test-button" onclick="testConsoleTrace()">Test Console Trace</button>
+        </div>
+
+        <div class="test-section">
+            <h2 class="text-xl font-bold text-red-400 mb-4">Console Assert</h2>
+            <p class="mb-4">Test console.assert functionality:</p>
+            <button class="test-button" onclick="testConsoleAssert()">Test Console Assert</button>
+        </div>
+
+        <div class="test-section">
+            <h2 class="text-xl font-bold text-pink-400 mb-4">Console Count</h2>
+            <p class="mb-4">Test console.count functionality:</p>
+            <button class="test-button" onclick="testConsoleCount()">Test Console Count</button>
+        </div>
+
+        <div class="test-section">
+            <h2 class="text-xl font-bold text-teal-400 mb-4">Console Timer</h2>
+            <p class="mb-4">Test console timing functionality:</p>
+            <button class="test-button" onclick="testConsoleTimer()">Test Console Timer</button>
+        </div>
+
+        <div class="test-section">
+            <h2 class="text-xl font-bold text-gray-400 mb-4">Console Clear</h2>
+            <p class="mb-4">Test console.clear functionality:</p>
+            <button class="test-button danger" onclick="testConsoleClear()">Clear Console</button>
+        </div>
+
+        <div class="test-section">
+            <h2 class="text-xl font-bold text-indigo-400 mb-4">Complex Scenarios</h2>
+            <p class="mb-4">Test complex logging scenarios:</p>
+            <button class="test-button" onclick="testComplexScenarios()">Test Complex Scenarios</button>
+        </div>
+    </div>
+
+    <script>
+        // Basic Logging Tests
+        function testBasicLogging() {
+            console.log('This is a log message');
+            console.info('This is an info message');
+            console.warn('This is a warning message');
+            console.error('This is an error message');
+            console.debug('This is a debug message');
+        }
+
+        // Object Inspection Tests
+        function testObjectInspection() {
+            const simpleObject = { name: 'John', age: 30, city: 'New York' };
+            const complexObject = {
+                user: {
+                    id: 1,
+                    name: 'John Doe',
+                    email: 'john@example.com',
+                    address: {
+                        street: '123 Main St',
+                        city: 'New York',
+                        zipCode: '10001'
+                    }
+                },
+                settings: {
+                    theme: 'dark',
+                    notifications: true,
+                    language: 'en'
+                }
+            };
+            const array = [1, 2, 3, { nested: 'object' }, [4, 5, 6]];
+            const error = new Error('This is a test error');
+            
+            console.log('Simple Object:', simpleObject);
+            console.log('Complex Object:', complexObject);
+            console.log('Array:', array);
+            console.log('Error:', error);
+            console.log('Mixed types:', 'string', 42, true, null, undefined, simpleObject);
+        }
+
+        // Console Groups Tests
+        function testConsoleGroups() {
+            console.group('User Information');
+            console.log('Name: John Doe');
+            console.log('Age: 30');
+            console.log('Email: john@example.com');
+            
+            console.groupCollapsed('Address Details');
+            console.log('Street: 123 Main St');
+            console.log('City: New York');
+            console.log('Zip: 10001');
+            console.groupEnd();
+            
+            console.group('Settings');
+            console.log('Theme: Dark');
+            console.log('Notifications: Enabled');
+            console.groupEnd();
+            
+            console.groupEnd();
+        }
+
+        // Console Table Tests
+        function testConsoleTable() {
+            const users = [
+                { name: 'John', age: 30, city: 'New York' },
+                { name: 'Jane', age: 25, city: 'Los Angeles' },
+                { name: 'Bob', age: 35, city: 'Chicago' }
+            ];
+            
+            const products = [
+                { id: 1, name: 'Laptop', price: 999.99, category: 'Electronics' },
+                { id: 2, name: 'Book', price: 19.99, category: 'Education' },
+                { id: 3, name: 'Phone', price: 699.99, category: 'Electronics' }
+            ];
+            
+            console.table(users);
+            console.table(products);
+            console.table(users, ['name', 'age']); // Specific columns
+        }
+
+        // Console Trace Tests
+        function testConsoleTrace() {
+            function functionA() {
+                functionB();
+            }
+            
+            function functionB() {
+                functionC();
+            }
+            
+            function functionC() {
+                console.trace('Trace from functionC');
+            }
+            
+            functionA();
+        }
+
+        // Console Assert Tests
+        function testConsoleAssert() {
+            const value = 42;
+            const isString = 'hello';
+            const isArray = [1, 2, 3];
+            
+            console.assert(value === 42, 'Value should be 42');
+            console.assert(value === 50, 'Value should be 50'); // This will fail
+            console.assert(typeof isString === 'string', 'Should be a string');
+            console.assert(Array.isArray(isArray), 'Should be an array');
+            console.assert(isArray.length === 5, 'Array should have 5 elements'); // This will fail
+        }
+
+        // Console Count Tests
+        function testConsoleCount() {
+            console.count('button-clicks');
+            console.count('button-clicks');
+            console.count('button-clicks');
+            console.count('api-calls');
+            console.count('api-calls');
+            console.countReset('button-clicks');
+            console.count('button-clicks');
+        }
+
+        // Console Timer Tests
+        function testConsoleTimer() {
+            console.time('data-processing');
+            
+            // Simulate some work
+            setTimeout(() => {
+                console.timeLog('data-processing', 'Halfway done');
+                
+                setTimeout(() => {
+                    console.timeEnd('data-processing');
+                }, 100);
+            }, 100);
+            
+            console.time('api-request');
+            setTimeout(() => {
+                console.timeEnd('api-request');
+            }, 200);
+        }
+
+        // Console Clear Test
+        function testConsoleClear() {
+            console.clear();
+        }
+
+        // Complex Scenarios
+        function testComplexScenarios() {
+            // Mixed logging with groups
+            console.group('API Request Flow');
+            console.log('Starting API request...');
+            console.time('api-timer');
+            
+            console.group('Request Details');
+            console.log('URL: https://api.example.com/users');
+            console.log('Method: GET');
+            console.log('Headers:', { 'Authorization': 'Bearer token123' });
+            console.groupEnd();
+            
+            // Simulate async operation
+            setTimeout(() => {
+                console.log('Request completed');
+                console.timeEnd('api-timer');
+                console.groupEnd();
+                
+                // Error handling
+                console.group('Error Handling');
+                console.error('Network error occurred');
+                console.trace('Error stack trace');
+                console.groupEnd();
+            }, 100);
+        }
+
+        // Auto-run some tests on page load
+        window.addEventListener('load', () => {
+            console.log('🚀 Console Test Suite Loaded');
+            console.log('Click the buttons above to test different console features');
+            console.log('Make sure to open the LogToHTML DevTools to see the results!');
+        });
+    </script>
+    <script src="/dist/bundle.js"></script>
+</body>
+</html>

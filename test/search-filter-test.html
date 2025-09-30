@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search & Filter Test - LogToHTML DevTools</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'JetBrains Mono', monospace;
+            background: #1e1e1e;
+            color: #cccccc;
+        }
+        .test-section {
+            background: #2a2a2a;
+            border: 1px solid #3c3c3c;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .test-button {
+            background: #007acc;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 4px;
+            font-size: 12px;
+        }
+        .test-button:hover {
+            background: #005a9e;
+        }
+        .test-button.danger {
+            background: #dc3545;
+        }
+        .test-button.danger:hover {
+            background: #c82333;
+        }
+        .test-button.success {
+            background: #28a745;
+        }
+        .test-button.success:hover {
+            background: #20923a;
+        }
+        .test-button.warning {
+            background: #ffc107;
+            color: #000;
+        }
+        .test-button.warning:hover {
+            background: #e0a800;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mx-auto p-4">
+        <h1 class="text-3xl font-bold text-blue-400 mb-8">Search & Filter Test Suite</h1>
+        
+        <div class="test-section">
+            <h2 class="text-xl font-bold text-green-400 mb-4">Filter Tests</h2>
+            <p class="mb-4">Test filtering by log levels:</p>
+            <button class="test-button" onclick="testAllLevels()">Test All Log Levels</button>
+            <button class="test-button success" onclick="testInfoLogs()">Test Info Logs</button>
+            <button class="test-button warning" onclick="testWarningLogs()">Test Warning Logs</button>
+            <button class="test-button danger" onclick="testErrorLogs()">Test Error Logs</button>
+            <button class="test-button" onclick="testDebugLogs()">Test Debug Logs</button>
+        </div>
+
+        <div class="test-section">
+            <h2 class="text-xl font-bold text-yellow-400 mb-4">Search Tests</h2>
+            <p class="mb-4">Test search functionality with various patterns:</p>
+            <button class="test-button" onclick="testSearchPatterns()">Test Search Patterns</button>
+            <button class="test-button" onclick="testCaseSensitivity()">Test Case Sensitivity</button>
+            <button class="test-button" onclick="testSpecialCharacters()">Test Special Characters</button>
+            <button class="test-button" onclick="testEmptySearch()">Test Empty Search</button>
+        </div>
+
+        <div class="test-section">
+            <h2 class="text-xl font-bold text-purple-400 mb-4">Complex Search Tests</h2>
+            <p class="mb-4">Test search with complex data structures:</p>
+            <button class="test-button" onclick="testObjectSearch()">Test Object Search</button>
+            <button class="test-button" onclick="testArraySearch()">Test Array Search</button>
+            <button class="test-button" onclick="testNestedSearch()">Test Nested Search</button>
+            <button class="test-button" onclick="testFunctionSearch()">Test Function Search</button>
+        </div>
+
+        <div class="test-section">
+            <h2 class="text-xl font-bold text-orange-400 mb-4">Edge Cases</h2>
+            <p class="mb-4">Test edge cases and error conditions:</p>
+            <button class="test-button" onclick="testLongMessages()">Test Long Messages</button>
+            <button class="test-button" onclick="testUnicodeSearch()">Test Unicode Search</button>
+            <button class="test-button" onclick="testRegexSpecialChars()">Test Regex Special Chars</button>
+            <button class="test-button" onclick="testPerformance()">Test Performance</button>
+        </div>
+
+        <div class="test-section">
+            <h2 class="text-xl font-bold text-red-400 mb-4">Clear & Reset</h2>
+            <p class="mb-4">Test clearing functionality:</p>
+            <button class="test-button danger" onclick="clearAllLogs()">Clear All Logs</button>
+        </div>
+    </div>
+
+    <script>
+        // Filter Tests
+        function testAllLevels() {
+            console.log('This is a log message');
+            console.info('This is an info message');
+            console.warn('This is a warning message');
+            console.error('This is an error message');
+            console.debug('This is a debug message');
+        }
+
+        function testInfoLogs() {
+            console.info('User logged in successfully');
+            console.info('Data loaded from API');
+            console.info('Configuration updated');
+        }
+
+        function testWarningLogs() {
+            console.warn('Deprecated function used');
+            console.warn('Memory usage is high');
+            console.warn('Network request timeout');
+        }
+
+        function testErrorLogs() {
+            console.error('Failed to connect to server');
+            console.error('Invalid user input');
+            console.error('Database connection lost');
+        }
+
+        function testDebugLogs() {
+            console.debug('Debug: Processing user data');
+            console.debug('Debug: API response received');
+            console.debug('Debug: Validation completed');
+        }
+
+        // Search Tests
+        function testSearchPatterns() {
+            console.log('Search for: apple');
+            console.log('Search for: banana');
+            console.log('Search for: cherry');
+            console.log('Search for: date');
+            console.log('Search for: elderberry');
+        }
+
+        function testCaseSensitivity() {
+            console.log('Case sensitive: Apple');
+            console.log('Case sensitive: apple');
+            console.log('Case sensitive: APPLE');
+            console.log('Case sensitive: ApPlE');
+        }
+
+        function testSpecialCharacters() {
+            console.log('Special chars: !@#$%^&*()');
+            console.log('Special chars: []{}|\\:";\'<>?,./');
+            console.log('Special chars: `~-_=+');
+            console.log('Special chars: \n\t\r');
+        }
+
+        function testEmptySearch() {
+            console.log('Empty search test 1');
+            console.log('Empty search test 2');
+            console.log('Empty search test 3');
+        }
+
+        // Complex Search Tests
+        function testObjectSearch() {
+            const user = { name: 'John', age: 30, city: 'New York' };
+            const product = { id: 1, name: 'Laptop', price: 999.99 };
+            const settings = { theme: 'dark', notifications: true };
+            
+            console.log('User object:', user);
+            console.log('Product object:', product);
+            console.log('Settings object:', settings);
+        }
+
+        function testArraySearch() {
+            const fruits = ['apple', 'banana', 'cherry'];
+            const numbers = [1, 2, 3, 4, 5];
+            const mixed = ['text', 123, true, null];
+            
+            console.log('Fruits array:', fruits);
+            console.log('Numbers array:', numbers);
+            console.log('Mixed array:', mixed);
+        }
+
+        function testNestedSearch() {
+            const complex = {
+                user: {
+                    profile: {
+                        name: 'John Doe',
+                        settings: {
+                            theme: 'dark',
+                            language: 'en'
+                        }
+                    }
+                },
+                data: [
+                    { id: 1, value: 'test' },
+                    { id: 2, value: 'example' }
+                ]
+            };
+            
+            console.log('Nested object:', complex);
+        }
+
+        function testFunctionSearch() {
+            function myFunction() {
+                return 'Hello World';
+            }
+            
+            const arrowFunction = () => 'Arrow function';
+            const asyncFunction = async () => 'Async function';
+            
+            console.log('Regular function:', myFunction);
+            console.log('Arrow function:', arrowFunction);
+            console.log('Async function:', asyncFunction);
+        }
+
+        // Edge Cases
+        function testLongMessages() {
+            const longMessage = 'This is a very long message that should test the search functionality with a lot of text. '.repeat(10);
+            console.log(longMessage);
+            
+            const longObject = {
+                description: 'This is a very long description that should test the search functionality with a lot of text. '.repeat(5),
+                data: Array.from({ length: 100 }, (_, i) => `Item ${i}`)
+            };
+            console.log('Long object:', longObject);
+        }
+
+        function testUnicodeSearch() {
+            console.log('Unicode: Hello 世界 🌍');
+            console.log('Unicode: Привет мир');
+            console.log('Unicode: مرحبا بالعالم');
+            console.log('Unicode: こんにちは世界');
+            console.log('Unicode: Emoji test: 🚀🎉🔥💯⭐');
+        }
+
+        function testRegexSpecialChars() {
+            console.log('Regex test: .*+?^${}[]|()\\');
+            console.log('Regex test: [a-z]');
+            console.log('Regex test: \\d+');
+            console.log('Regex test: ^start$');
+            console.log('Regex test: (group)');
+        }
+
+        function testPerformance() {
+            console.time('Performance Test');
+            
+            // Generate many logs quickly
+            for (let i = 0; i < 100; i++) {
+                console.log(`Performance test message ${i}`);
+            }
+            
+            console.timeEnd('Performance Test');
+        }
+
+        function clearAllLogs() {
+            console.clear();
+        }
+
+        // Auto-run some tests on page load
+        window.addEventListener('load', () => {
+            console.log('🔍 Search & Filter Test Suite Loaded');
+            console.log('Click the buttons above to test search and filter functionality');
+            console.log('Try searching for: "test", "message", "object", "array", "function"');
+            console.log('Try filtering by: log, info, warn, error, debug');
+        });
+    </script>
+    <script src="/dist/bundle.js"></script>
+</body>
+</html>
