@@ -1,4 +1,5 @@
 const path = require("path");
+const TerserPlugin = require("terser-webpack-plugin");
 module.exports = {
   entry: "./index.js", // The entry point for bundling
   output: {
@@ -39,6 +40,12 @@ module.exports = {
       "react-dom": "preact/compat", // Must be below test-utils
       "react/jsx-runtime": "preact/jsx-runtime",
     },
+  },
+  optimization: {
+    minimizer: [
+      // Escape non-ASCII so the bundle renders correctly on pages without a UTF-8 charset
+      new TerserPlugin({ terserOptions: { format: { ascii_only: true } } }),
+    ],
   },
   mode: process.env.NODE_ENV ?? "development",
 };

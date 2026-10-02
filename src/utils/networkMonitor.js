@@ -4,20 +4,28 @@ export class NetworkMonitor {
     this.requests = [];
     this.resources = [];
     this.isRecording = true;
+    this.installed = false;
+    this.maxEntries = 500;
+    this.maxBodySize = 50 * 1024;
+    this.originalFetch = null;
+    this.originalXHR = null;
+    this.performanceObserver = null;
+  }
+
+  // Patch fetch/XHR and start observing resources. Safe to call more than once.
+  install() {
+    if (this.installed) return;
     this.originalFetch = window.fetch;
     this.originalXHR = window.XMLHttpRequest;
-    this.performanceObserver = null;
-    
-    // Capture existing performance entries before initialization
     this.captureExistingEntries();
-    
-    this.init();
+    if (this.originalFetch) this.overrideFetch();
+    if (this.originalXHR) this.overrideXHR();
+    this.setupPerformanceObserver();
+    this.installed = true;
   }
 
   init() {
-    this.overrideFetch();
-    this.overrideXHR();
-    this.setupPerformanceObserver();
+    this.install();
   }
 
   captureExistingEntries() {
@@ -39,120 +47,169 @@ export class NetworkMonitor {
           isExisting: true
         };
         
-        this.resources.push(resource);
+        this.pushCapped(this.resources, resource);
       });
     }
+  }
+
+  // Normalise fetch() arguments: input may be a string, URL or Request
+  describeFetch(input, init) {
+    const isRequest = typeof Request !== 'undefined' && input instanceof Request;
+    const url = this.resolveUrl(isRequest ? input.url : input);
+    const method = (init?.method || (isRequest ? input.method : null) || 'GET').toUpperCase();
+    const headers = init?.headers || (isRequest ? input.headers : null) || {};
+    return {
+      url,
+      method,
+      requestHeaders: this.headersToObject(headers),
+      requestBody: init?.body ?? null
+    };
+  }
+
+  resolveUrl(url) {
+    try {
+      return new URL(String(url), window.location.href).href;
+    } catch (e) {
+      return String(url);
+    }
+  }
+
+  headersToObject(headers) {
+    try {
+      if (typeof headers.forEach === 'function' && !Array.isArray(headers)) {
+        const out = {};
+        headers.forEach((value, key) => { out[key] = value; });
+        return out;
+      }
+      if (Array.isArray(headers)) return Object.fromEntries(headers);
+      return { ...headers };
+    } catch (e) {
+      return {};
+    }
+  }
+
+  // Only buffer bodies we can show as text; never read event streams or binary
+  shouldReadBody(contentType) {
+    if (!contentType) return true;
+    if (contentType.includes('text/event-stream')) return false;
+    return /^(text\/|application\/(json|xml|javascript|x-www-form-urlencoded)|[^;]*\+(json|xml))/.test(contentType);
+  }
+
+  truncateBody(body) {
+    if (typeof body !== 'string' || body.length <= this.maxBodySize) return body;
+    return body.slice(0, this.maxBodySize) + `\n… [truncated, ${body.length} chars total]`;
   }
 
   overrideFetch() {
     const self = this;
     const originalFetch = this.originalFetch;
-    
-    // Create a proper function that preserves the this context
-    const fetchWrapper = async function(...args) {
+
+    const fetchWrapper = function(...args) {
       if (!self.isRecording) return originalFetch.apply(this, args);
-      
-      const [resource, config] = args;
-      const requestId = self.generateRequestId();
-      const startTime = performance.now();
-      const startTimestamp = Date.now();
-      
-      const request = {
-        id: requestId,
-        url: resource,
-        method: config?.method || 'GET',
-        requestHeaders: config?.headers || {},
-        requestBody: config?.body || null,
-        startTime,
-        startTimestamp,
-        type: 'fetch',
-        status: 'pending'
-      };
-      
-      self.addRequest(request);
-      
+
+      // Recording must never break the page's own request
+      let request = null;
       try {
-        const response = await originalFetch.apply(this, args);
-        const endTime = performance.now();
-        const duration = endTime - startTime;
-        
-        // Clone response to read body
-        const clonedResponse = response.clone();
-        let responseBody = '';
-        let responseSize = 0;
-        
-        try {
-          responseBody = await clonedResponse.text();
-          responseSize = new Blob([responseBody]).size;
-        } catch (e) {
-          responseBody = '[Unable to read response body]';
-        }
-        
-        const updatedRequest = {
-          ...request,
-          status: response.status,
-          statusText: response.statusText,
-          responseHeaders: Object.fromEntries(response.headers.entries()),
-          responseBody,
-          responseSize,
-          duration: Math.round(duration),
-          endTime,
-          endTimestamp: Date.now(),
-          success: response.ok,
-          type: self.getRequestType(resource, response.headers)
+        request = {
+          id: self.generateRequestId(),
+          ...self.describeFetch(args[0], args[1]),
+          startTime: performance.now(),
+          startTimestamp: Date.now(),
+          type: 'fetch',
+          status: 'pending'
         };
-        
-        self.updateRequest(updatedRequest);
-        return response;
-        
-      } catch (error) {
-        const endTime = performance.now();
-        const duration = endTime - startTime;
-        
-        const failedRequest = {
-          ...request,
-          status: 0,
-          statusText: 'Failed',
-          responseBody: error.message,
-          duration: Math.round(duration),
-          endTime,
-          endTimestamp: Date.now(),
-          success: false,
-          error: true,
-          type: self.getRequestType(resource, {})
-        };
-        
-        self.updateRequest(failedRequest);
-        throw error;
+        self.addRequest(request);
+      } catch (e) {
+        request = null;
       }
+
+      const result = originalFetch.apply(this, args);
+      if (!request) return result;
+
+      return result.then(
+        (response) => {
+          try {
+            self.recordFetchResponse(request, response);
+          } catch (e) {}
+          return response;
+        },
+        (error) => {
+          try {
+            self.updateRequest({
+              ...request,
+              status: 0,
+              statusText: 'Failed',
+              responseBody: error?.message ?? String(error),
+              duration: Math.round(performance.now() - request.startTime),
+              endTimestamp: Date.now(),
+              success: false,
+              error: true,
+              type: self.getRequestType(request.url, {})
+            });
+          } catch (e) {}
+          throw error;
+        }
+      );
     };
-    
-    // Preserve the original fetch properties
+
     Object.setPrototypeOf(fetchWrapper, originalFetch);
     Object.defineProperty(fetchWrapper, 'name', { value: 'fetch', configurable: true });
-    
+
     window.fetch = fetchWrapper;
+  }
+
+  // Record status immediately; read the body in the background so the page
+  // gets its Response without waiting (streams and SSE would never finish)
+  recordFetchResponse(request, response) {
+    const endTime = performance.now();
+    const responseHeaders = this.headersToObject(response.headers);
+    const contentType = responseHeaders['content-type'] || '';
+    const completed = {
+      ...request,
+      status: response.status,
+      statusText: response.statusText,
+      responseHeaders,
+      responseBody: '',
+      responseSize: Number(responseHeaders['content-length']) || 0,
+      duration: Math.round(endTime - request.startTime),
+      endTime,
+      endTimestamp: Date.now(),
+      success: response.ok,
+      type: this.getRequestType(request.url, responseHeaders)
+    };
+    this.updateRequest(completed);
+
+    if (!this.shouldReadBody(contentType)) {
+      this.updateRequest({ ...completed, responseBody: `[${contentType} body not captured]` });
+      return;
+    }
+
+    response.clone().text().then(
+      (body) => this.updateRequest({
+        ...completed,
+        responseBody: this.truncateBody(body),
+        responseSize: completed.responseSize || body.length
+      }),
+      () => this.updateRequest({ ...completed, responseBody: '[Unable to read response body]' })
+    );
   }
 
   overrideXHR() {
     const self = this;
-    const originalXHR = window.XMLHttpRequest;
+    const originalXHR = this.originalXHR;
     
     // Create a proper constructor function
     function XHRWrapper() {
       const xhr = new originalXHR();
       const requestId = self.generateRequestId();
-      const startTime = performance.now();
-      const startTimestamp = Date.now();
-      
       let request = {
         id: requestId,
         url: '',
         method: 'GET',
         requestHeaders: {},
         requestBody: null,
-        startTime,
-        startTimestamp,
+        startTime: 0,
+        startTimestamp: 0,
         type: 'xhr',
         status: 'pending'
       };
@@ -161,9 +218,9 @@ export class NetworkMonitor {
       const originalSend = xhr.send;
       const originalSetRequestHeader = xhr.setRequestHeader;
       
-      xhr.open = function(method, url, async, user, password) {
-        request.url = url;
-        request.method = method;
+      xhr.open = function(method, url) {
+        request.url = self.resolveUrl(url);
+        request.method = String(method).toUpperCase();
         return originalOpen.apply(this, arguments);
       };
       
@@ -174,53 +231,56 @@ export class NetworkMonitor {
       
       xhr.send = function(data) {
         if (self.isRecording) {
-          request.requestBody = data;
-          self.addRequest(request);
+          try {
+            request.requestBody = data ?? null;
+            request.startTime = performance.now();
+            request.startTimestamp = Date.now();
+            self.addRequest(request);
+          } catch (e) {}
         }
         
         xhr.addEventListener('load', function() {
           if (!self.isRecording) return;
-          
-          const endTime = performance.now();
-          const duration = endTime - startTime;
-          
-          const updatedRequest = {
-            ...request,
-            status: xhr.status,
-            statusText: xhr.statusText,
-            responseHeaders: self.parseXHRHeaders(xhr.getAllResponseHeaders()),
-            responseBody: xhr.responseText,
-            responseSize: xhr.responseText.length,
-            duration: Math.round(duration),
-            endTime,
-            endTimestamp: Date.now(),
-            success: xhr.status >= 200 && xhr.status < 300,
-            type: self.getRequestType(request.url, {})
-          };
-          
-          self.updateRequest(updatedRequest);
+          try {
+            const endTime = performance.now();
+            // responseText throws unless responseType is '' or 'text'
+            const isText = xhr.responseType === '' || xhr.responseType === 'text';
+            const body = isText ? xhr.responseText : `[${xhr.responseType} response]`;
+            const responseHeaders = self.parseXHRHeaders(xhr.getAllResponseHeaders());
+
+            self.updateRequest({
+              ...request,
+              status: xhr.status,
+              statusText: xhr.statusText,
+              responseHeaders,
+              responseBody: self.truncateBody(body),
+              responseSize: isText ? body.length : 0,
+              duration: Math.round(endTime - request.startTime),
+              endTime,
+              endTimestamp: Date.now(),
+              success: xhr.status >= 200 && xhr.status < 300,
+              type: self.getRequestType(request.url, responseHeaders)
+            });
+          } catch (e) {}
         });
         
         xhr.addEventListener('error', function() {
           if (!self.isRecording) return;
-          
-          const endTime = performance.now();
-          const duration = endTime - startTime;
-          
-          const failedRequest = {
-            ...request,
-            status: 0,
-            statusText: 'Failed',
-            responseBody: 'Network error',
-            duration: Math.round(duration),
-            endTime,
-            endTimestamp: Date.now(),
-            success: false,
-            error: true,
-            type: self.getRequestType(request.url, {})
-          };
-          
-          self.updateRequest(failedRequest);
+          try {
+            const endTime = performance.now();
+            self.updateRequest({
+              ...request,
+              status: 0,
+              statusText: 'Failed',
+              responseBody: 'Network error',
+              duration: Math.round(endTime - request.startTime),
+              endTime,
+              endTimestamp: Date.now(),
+              success: false,
+              error: true,
+              type: self.getRequestType(request.url, {})
+            });
+          } catch (e) {}
         });
         
         return originalSend.apply(this, arguments);
@@ -229,7 +289,8 @@ export class NetworkMonitor {
       return xhr;
     }
     
-    // Preserve the original XMLHttpRequest properties
+    // Keep `instanceof XMLHttpRequest` and static constants working
+    XHRWrapper.prototype = originalXHR.prototype;
     Object.setPrototypeOf(XHRWrapper, originalXHR);
     Object.defineProperty(XHRWrapper, 'name', { value: 'XMLHttpRequest', configurable: true });
     
@@ -280,14 +341,16 @@ export class NetworkMonitor {
       success: entry.transferSize > 0
     };
     
-    this.resources.push(resource);
+    this.pushCapped(this.resources, resource);
     this.dispatchEvent('new-resource', resource);
   }
 
   getRequestType(url, headers) {
-    const urlObj = new URL(url);
-    const pathname = urlObj.pathname.toLowerCase();
-    const contentType = headers['content-type'] || headers['Content-Type'] || '';
+    let pathname = '';
+    try {
+      pathname = new URL(String(url), window.location.href).pathname.toLowerCase();
+    } catch (e) {}
+    const contentType = headers?.['content-type'] || headers?.['Content-Type'] || '';
     
     if (pathname.endsWith('.js') || contentType.includes('javascript')) return 'script';
     if (pathname.endsWith('.css') || contentType.includes('text/css')) return 'stylesheet';
@@ -318,8 +381,13 @@ export class NetworkMonitor {
     return `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
   }
 
+  pushCapped(list, item) {
+    list.push(item);
+    if (list.length > this.maxEntries) list.splice(0, list.length - this.maxEntries);
+  }
+
   addRequest(request) {
-    this.requests.push(request);
+    this.pushCapped(this.requests, request);
     this.dispatchEvent('new-network-request', request);
   }
 
@@ -354,15 +422,18 @@ export class NetworkMonitor {
   }
 
   destroy() {
+    if (!this.installed) return;
     if (this.performanceObserver) {
       this.performanceObserver.disconnect();
+      this.performanceObserver = null;
     }
-    
+
     // Restore original methods
-    window.fetch = this.originalFetch;
-    window.XMLHttpRequest = this.originalXHR;
+    if (this.originalFetch) window.fetch = this.originalFetch;
+    if (this.originalXHR) window.XMLHttpRequest = this.originalXHR;
+    this.installed = false;
   }
 }
 
-// Create singleton instance
+// Singleton instance; nothing is patched until install() is called
 export const networkMonitor = new NetworkMonitor();

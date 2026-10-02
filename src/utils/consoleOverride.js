@@ -5,8 +5,17 @@ export class ConsoleOverride {
     this.groups = [];
     this.counters = new Map();
     this.timers = new Map();
+    this.maxEntries = 1000;
+    this.installed = false;
+    this.originalConsole = this.captureOriginalConsole();
+  }
+
+  // Patch console methods. Safe to call more than once.
+  install() {
+    if (this.installed) return;
     this.originalConsole = this.captureOriginalConsole();
     this.overrideAllMethods();
+    this.installed = true;
   }
 
   captureOriginalConsole() {
@@ -64,10 +73,11 @@ export class ConsoleOverride {
     return (...args) => {
       // Call original method
       this.originalConsole[level](...args);
-      
-      // Create log entry
-      const logEntry = this.createLogEntry(level, args);
-      this.addToBuffer(logEntry);
+
+      // Capturing must never break the caller
+      try {
+        this.addToBuffer(this.createLogEntry(level, args));
+      } catch (e) {}
     };
   }
 
@@ -342,6 +352,9 @@ export class ConsoleOverride {
 
   addToBuffer(entry) {
     this.logBuffer.push(entry);
+    if (this.logBuffer.length > this.maxEntries) {
+      this.logBuffer.splice(0, this.logBuffer.length - this.maxEntries);
+    }
     window.dispatchEvent(new CustomEvent('new-log', { detail: entry }));
   }
 
@@ -358,12 +371,14 @@ export class ConsoleOverride {
   }
 
   destroy() {
+    if (!this.installed) return;
     // Restore original console methods
     Object.keys(this.originalConsole).forEach(method => {
       console[method] = this.originalConsole[method];
     });
+    this.installed = false;
   }
 }
 
-// Create singleton instance
+// Singleton instance; console is only patched once install() is called
 export const consoleOverride = new ConsoleOverride();

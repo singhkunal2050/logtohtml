@@ -3,6 +3,7 @@ import { useState, useEffect } from "preact/hooks";
 import { logFilters } from "../configs.js";
 import { devtoolsStore } from "../store/devtoolsStore.js";
 import { searchFilter } from "../utils/searchFilter.js";
+import { consoleOverride } from "../utils/consoleOverride.js";
 
 export default function Header({
   activeTab,
@@ -24,7 +25,7 @@ export default function Header({
   // Get search suggestions
   useEffect(() => {
     if (search && search.length >= 2) {
-      const logs = consoleOverride?.getLogs() || [];
+      const logs = consoleOverride.getLogs();
       const suggestions = searchFilter.getSearchSuggestions(logs, search);
       setSearchSuggestions(suggestions);
       setShowSuggestions(suggestions.length > 0);

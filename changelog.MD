@@ -1,3 +1,13 @@
+### Unreleased
+- Nothing is patched unless `?logtohtml=true` is present (previously console, fetch and XHR were wrapped on every page that loaded the library)
+- Fixed fetch calls with relative URLs or `Request` objects rejecting in the host app
+- fetch now resolves immediately; response bodies are read in the background (streaming/SSE responses no longer hang)
+- XHR: `instanceof XMLHttpRequest` works and non-text `responseType` no longer throws
+- Fixed search crashing with a ReferenceError
+- Log and request buffers are capped (1000 logs, 500 requests, 50 KB per body)
+- Bundle is ASCII-only so it renders on pages without a UTF-8 charset
+- Added Vitest test suite (`npm test`)
+
 ### 0.1.51 09th Mar 2024
 - Added Repo Source to Package.json
 

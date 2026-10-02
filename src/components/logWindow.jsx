@@ -39,10 +39,10 @@ export default function LogWindow() {
 
   useEffect(() => {
     // Initialize comprehensive console override
-    consoleOverride.overrideAllMethods();
+    consoleOverride.install();
     
     // Initialize network monitoring
-    networkMonitor.init();
+    networkMonitor.install();
     
     // Initialize performance monitoring
     performanceUtils.init();
