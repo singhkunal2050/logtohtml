@@ -6,7 +6,7 @@
   },
   "version": "0.1.6",
   "description": "A lightweight JavaScript utility that adds a dynamic log window to your application, beautifies console outputs, and enhances debugging on mobile interfaces.",
-  "main": "index.js",
+  "main": "dist/bundle.js",
   "scripts": {
     "prepare": "npm run build",
     "test": "vitest run",
@@ -37,5 +37,8 @@
     "vitest": "^5.0.3",
     "webpack": "^5.97.1",
     "webpack-cli": "^6.0.1"
-  }
+  },
+  "files": [
+    "dist"
+  ]
 }

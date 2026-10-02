@@ -8,6 +8,7 @@
 - Bundle is ASCII-only so it renders on pages without a UTF-8 charset
 - Added Vitest test suite (`npm test`)
 - Panel shows Console and Network only; unfinished Performance, Elements, Storage, Application and Security tabs removed
+- `import "logtohtml"` now resolves to the built bundle (previously pointed at raw JSX source); npm package trimmed to dist only
 - Removed unused fuse.js dependency; bundle 140 KB -> 91 KB (22 KB gzipped)
 
 ### 0.1.51 09th Mar 2024
