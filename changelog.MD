@@ -1,4 +1,4 @@
-### Unreleased
+### 0.3.0 02nd Oct 2026
 - New panel: floating launcher (drag to any edge, shows error count) that opens a resizable bottom sheet; open state, tab, height and launcher position survive reloads
 - Console: level chips with counts, text or /regex/ filter, repeated logs collapsed (×N), file:line for every log, errors show their stack with Copy error and Show related request, failed requests appear in the timeline, %s/%d/%o/%c format specifiers, lazy object inspector that never invokes getters
 - Console: JavaScript input with history (↑/↓), evaluates in page scope and awaits promises
