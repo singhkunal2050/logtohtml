@@ -10,7 +10,7 @@ export default function ConsoleTab({ filter, search }) {
 
   useEffect(() => {
     // Initialize console override
-    consoleOverride.overrideAllMethods();
+    consoleOverride.install();
     
     // Set initial logs
     setLogs(consoleOverride.getLogs());

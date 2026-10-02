@@ -13,7 +13,7 @@ export default function NetworkTab({ filter, search }) {
 
   useEffect(() => {
     // Initialize network monitoring
-    networkMonitor.init();
+    networkMonitor.install();
     
     // Set initial data
     setRequests(networkMonitor.getRequests());

@@ -3,6 +3,12 @@ import { useState, useEffect } from "preact/hooks";
 import { logFilters } from "../configs.js";
 import { devtoolsStore } from "../store/devtoolsStore.js";
 import { searchFilter } from "../utils/searchFilter.js";
+import { consoleOverride } from "../utils/consoleOverride.js";
+
+const visibleTabs = [
+  { id: "console", label: "Console" },
+  { id: "network", label: "Network" },
+];
 
 export default function Header({
   activeTab,
@@ -24,7 +30,7 @@ export default function Header({
   // Get search suggestions
   useEffect(() => {
     if (search && search.length >= 2) {
-      const logs = consoleOverride?.getLogs() || [];
+      const logs = consoleOverride.getLogs();
       const suggestions = searchFilter.getSearchSuggestions(logs, search);
       setSearchSuggestions(suggestions);
       setShowSuggestions(suggestions.length > 0);
@@ -36,83 +42,19 @@ export default function Header({
   return (
     <div id="log-window-header">
       <div id="log-window-sections">
-        <div
-          className="log-window-section-tab"
-          data-tab="console"
-          data-active={activeTab === "console"}
-          onClick={() => {
-            setActiveTab("console");
-            devtoolsStore.setState({ activeTab: "console" });
-          }}
-        >
-          Console
-        </div>
-        <div
-          className="log-window-section-tab"
-          data-tab="network"
-          data-active={activeTab === "network"}
-          onClick={() => {
-            setActiveTab("network");
-            devtoolsStore.setState({ activeTab: "network" });
-          }}
-        >
-          Network
-        </div>
-        <div
-          className="log-window-section-tab"
-          data-tab="performance"
-          data-active={activeTab === "performance"}
-          onClick={() => {
-            setActiveTab("performance");
-            devtoolsStore.setState({ activeTab: "performance" });
-          }}
-        >
-          Performance
-        </div>
-        <div
-          className="log-window-section-tab"
-          data-tab="elements"
-          data-active={activeTab === "elements"}
-          onClick={() => {
-            setActiveTab("elements");
-            devtoolsStore.setState({ activeTab: "elements" });
-          }}
-        >
-          Elements
-        </div>
-        <div
-          className="log-window-section-tab"
-          data-tab="storage"
-          data-active={activeTab === "storage"}
-          onClick={() => {
-            setActiveTab("storage");
-            devtoolsStore.setState({ activeTab: "storage" });
-          }}
-        >
-          Storage
-        </div>
-        <div
-          className="log-window-section-tab"
-          data-tab="application"
-          data-active={activeTab === "application"}
-          onClick={() => {
-            setActiveTab("application");
-            devtoolsStore.setState({ activeTab: "application" });
-          }}
-        >
-          Application
-        </div>
-        <div
-          className="log-window-section-tab"
-          data-tab="security"
-          data-active={activeTab === "security"}
-          onClick={() => {
-            setActiveTab("security");
-            devtoolsStore.setState({ activeTab: "security" });
-          }}
-        >
-          Security
-        </div>
+        {visibleTabs.map(({ id, label }) => (
+          <div
+            className="log-window-section-tab"
+            data-tab={id}
+            data-active={activeTab === id}
+            onClick={() => {
+              setActiveTab(id);
+              devtoolsStore.setState({ activeTab: id });
+            }}
+          >
+            {label}
+          </div>
+        ))}
       </div>
 
       <div id="filter-section"  >

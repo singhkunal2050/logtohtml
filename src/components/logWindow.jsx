@@ -4,7 +4,6 @@ import { useState, useEffect } from "preact/hooks";
 import Header from "./header.jsx";
 import Content from "./content.jsx";
 import { utils } from "../utils/utils.js";
-import { performanceUtils } from "../utils/performance.js";
 import { consoleOverride } from "../utils/consoleOverride.js";
 import { networkMonitor } from "../utils/networkMonitor.js";
 import { devtoolsStore } from "../store/devtoolsStore.js";
@@ -39,13 +38,11 @@ export default function LogWindow() {
 
   useEffect(() => {
     // Initialize comprehensive console override
-    consoleOverride.overrideAllMethods();
+    consoleOverride.install();
     
     // Initialize network monitoring
-    networkMonitor.init();
+    networkMonitor.install();
     
-    // Initialize performance monitoring
-    performanceUtils.init();
 
     setLogs(consoleOverride.getLogs());
     setNetworkRequests(networkMonitor.getRequests());
@@ -78,7 +75,6 @@ export default function LogWindow() {
       window.removeEventListener("new-network-request", handleNewNetworkRequest);
       window.removeEventListener("network-request-updated", handleNetworkRequestUpdated);
       window.removeEventListener("new-resource", handleNewResource);
-      performanceUtils.destroy();
       networkMonitor.destroy();
     };
   }, []);
