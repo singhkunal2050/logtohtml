@@ -14,7 +14,8 @@ module.exports = {
         use: {
           loader: "babel-loader",
           options: {
-            presets: ["@babel/preset-env"],
+            // Browsers with native ES modules (iOS/Safari 11+, Chrome 61+): no regenerator or ES5 helpers
+            presets: [["@babel/preset-env", { targets: { esmodules: true }, bugfixes: true }]],
             plugins: [
               [
                 "@babel/plugin-transform-react-jsx",

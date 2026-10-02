@@ -134,3 +134,35 @@ describe("console override", () => {
     console.log = realLog;
   });
 });
+
+describe("error capture", () => {
+  it("records uncaught errors and unhandled rejections", async () => {
+    vi.resetModules();
+    const { consoleOverride } = await import("../src/utils/consoleOverride.js");
+    const { errorCapture } = await import("../src/utils/errorCapture.js");
+    errorCapture.install();
+
+    const err = new TypeError("boom");
+    window.dispatchEvent(new ErrorEvent("error", { error: err, message: "boom", filename: "https://x.com/app.js", lineno: 9 }));
+    const rejection = new Event("unhandledrejection");
+    rejection.reason = "nope";
+    window.dispatchEvent(rejection);
+
+    const [a, b] = consoleOverride.getLogs();
+    expect(a).toMatchObject({ level: "error", uncaught: "error", message: "Uncaught TypeError: boom" });
+    expect(b).toMatchObject({ level: "error", uncaught: "rejection", message: "Uncaught (in promise) nope" });
+    errorCapture.destroy();
+  });
+
+  it("records a source location for console calls", async () => {
+    const realLog = console.log;
+    console.log = vi.fn();
+    vi.resetModules();
+    const { consoleOverride } = await import("../src/utils/consoleOverride.js");
+    consoleOverride.install();
+    console.log("where am I");
+    expect(consoleOverride.getLogs()[0].source).toMatch(/safety\.test\.js:\d+/);
+    consoleOverride.destroy();
+    console.log = realLog;
+  });
+});

@@ -1,3 +1,5 @@
+import { stackFrames, frameLocation } from './format.js';
+
 // Comprehensive Console Override to match Chrome DevTools exactly
 export class ConsoleOverride {
   constructor() {
@@ -7,6 +9,7 @@ export class ConsoleOverride {
     this.timers = new Map();
     this.maxEntries = 1000;
     this.installed = false;
+    this.seq = 0;
     this.originalConsole = this.captureOriginalConsole();
   }
 
@@ -76,7 +79,12 @@ export class ConsoleOverride {
 
       // Capturing must never break the caller
       try {
-        this.addToBuffer(this.createLogEntry(level, args));
+        // Frame 0 is this wrapper; frame 1 is whoever called console.*
+        const frames = stackFrames(new Error().stack).slice(1);
+        const entry = this.createLogEntry(level, args);
+        entry.source = frameLocation(frames[0]);
+        if (level === 'error' || level === 'warn') entry.callStack = frames.slice(0, 10);
+        this.addToBuffer(entry);
       } catch (e) {}
     };
   }
@@ -92,6 +100,8 @@ export class ConsoleOverride {
         label: label,
         timestamp: new Date().toISOString(),
         collapsed: type === 'groupCollapsed',
+        groupLevel: this.groups.length,
+        message: String(label),
         children: []
       };
       
@@ -350,7 +360,37 @@ export class ConsoleOverride {
     return stack ? stack.split('\n').slice(2) : [];
   }
 
+  // Uncaught errors and unhandled rejections (see errorCapture.js)
+  recordUncaught({ error, message, source, kind }) {
+    const isError = error instanceof Error;
+    const text = isError ? `${error.name}: ${error.message}` : String(message ?? error);
+    this.addToBuffer({
+      type: 'log',
+      level: 'error',
+      uncaught: kind,
+      args: [isError ? error : text],
+      message: `Uncaught ${kind === 'rejection' ? '(in promise) ' : ''}${text}`,
+      stack: isError ? stackFrames(error.stack).slice(0, 15) : [],
+      source: source || (isError ? frameLocation(stackFrames(error.stack)[0]) : ''),
+      timestamp: new Date().toISOString(),
+      groupLevel: 0
+    });
+  }
+
+  // Entries from the panel's JavaScript input
+  recordRepl(type, payload) {
+    this.addToBuffer({
+      type,
+      timestamp: new Date().toISOString(),
+      groupLevel: 0,
+      ...payload
+    });
+  }
+
   addToBuffer(entry) {
+    entry.id = ++this.seq;
+    entry.ts = Date.now();
+    if (entry.groupLevel === undefined) entry.groupLevel = this.groups.length;
     this.logBuffer.push(entry);
     if (this.logBuffer.length > this.maxEntries) {
       this.logBuffer.splice(0, this.logBuffer.length - this.maxEntries);
