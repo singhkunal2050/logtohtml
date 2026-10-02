@@ -1,4 +1,4 @@
-### 0.1.6 02nd Oct 2026
+### 0.2.0 02nd Oct 2026
 - Nothing is patched unless `?logtohtml=true` is present (previously console, fetch and XHR were wrapped on every page that loaded the library)
 - Fixed fetch calls with relative URLs or `Request` objects rejecting in the host app
 - fetch now resolves immediately; response bodies are read in the background (streaming/SSE responses no longer hang)
