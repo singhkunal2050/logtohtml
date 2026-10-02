@@ -254,7 +254,7 @@ export class NetworkMonitor {
               statusText: xhr.statusText,
               responseHeaders,
               responseBody: self.truncateBody(body),
-              responseSize: isText ? body.length : 0,
+              responseSize: Number(responseHeaders['content-length']) || (isText ? body.length : 0),
               duration: Math.round(endTime - request.startTime),
               endTime,
               endTimestamp: Date.now(),

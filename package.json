@@ -4,7 +4,7 @@
     "type": "git",
     "url": "https://github.com/singhkunal2050/logtohtml.git"
   },
-  "version": "0.1.52",
+  "version": "0.1.6",
   "description": "A lightweight JavaScript utility that adds a dynamic log window to your application, beautifies console outputs, and enhances debugging on mobile interfaces.",
   "main": "index.js",
   "scripts": {
@@ -23,7 +23,6 @@
   "author": "@singhkunal2050",
   "license": "ISC",
   "dependencies": {
-    "fuse.js": "^7.1.0",
     "react": "npm:@preact/compat",
     "react-dom": "npm:@preact/compat"
   },
