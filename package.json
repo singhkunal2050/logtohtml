@@ -4,14 +4,15 @@
     "type": "git",
     "url": "git+https://github.com/singhkunal2050/logtohtml.git"
   },
-  "version": "0.2.0",
+  "version": "0.3.1",
   "description": "A lightweight JavaScript utility that adds a dynamic log window to your application, beautifies console outputs, and enhances debugging on mobile interfaces.",
   "main": "dist/bundle.js",
   "scripts": {
     "prepare": "npm run build",
     "test": "vitest run",
     "build": "webpack --mode production",
-    "watch": "nodemon --watch src --ext js,jsx,css,html --exec 'npm run build'"
+    "watch": "nodemon --watch src --ext js,jsx,css,html --exec 'npm run build'",
+    "prepublishOnly": "npm test && npm run build && node scripts/verify-release.mjs"
   },
   "keywords": [
     "console",

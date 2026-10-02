@@ -1,4 +1,8 @@
-### Unreleased
+### 0.3.1 03rd Oct 2026
+- Republish of 0.3.0, which was built from a different checkout: its bundle was 147 KB (ES5) and reported version 0.2.0. Functionality is the same; 0.3.1 is 77 KB (24.5 KB gzipped)
+- `npm publish` now runs tests and a release check (branch, clean tree, version, bundle size)
+
+### 0.3.0 02nd Oct 2026
 - New panel: floating launcher (drag to any edge, shows error count) that opens a resizable bottom sheet; open state, tab, height and launcher position survive reloads
 - Console: level chips with counts, text or /regex/ filter, repeated logs collapsed (×N), file:line for every log, errors show their stack with Copy error and Show related request, failed requests appear in the timeline, %s/%d/%o/%c format specifiers, lazy object inspector that never invokes getters
 - Console: JavaScript input with history (↑/↓), evaluates in page scope and awaits promises
