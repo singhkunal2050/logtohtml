@@ -1,3 +1,14 @@
+### Unreleased
+- New panel: floating launcher (drag to any edge, shows error count) that opens a resizable bottom sheet; open state, tab, height and launcher position survive reloads
+- Console: level chips with counts, text or /regex/ filter, repeated logs collapsed (×N), file:line for every log, errors show their stack with Copy error and Show related request, failed requests appear in the timeline, %s/%d/%o/%c format specifiers, lazy object inspector that never invokes getters
+- Console: JavaScript input with history (↑/↓), evaluates in page scope and awaits promises
+- Uncaught errors and unhandled promise rejections are captured from the moment logtohtml loads
+- Network: Fetch/XHR, Assets and Failed filters; request detail with Headers, Payload, Response (JSON tree) and Timing; Copy cURL, Copy body, Replay
+- New Storage tab: localStorage, sessionStorage and cookies, with filter, view, copy and delete
+- New Device tab: page, browser, screen, network and hardware details, with Copy device info
+- Panel styles are isolated from the host page
+- Bundle targets browsers with ES modules (iOS/Safari 11+, Chrome 61+); 24.5 KB gzipped
+
 ### 0.2.0 02nd Oct 2026
 - Nothing is patched unless `?logtohtml=true` is present (previously console, fetch and XHR were wrapped on every page that loaded the library)
 - Fixed fetch calls with relative URLs or `Request` objects rejecting in the host app
